@@ -101,22 +101,21 @@ app.post('/api/issues', async (req, res) => {
 // Update issue
 app.patch('/api/issues/:id', async (req, res) => {
   try {
-    const { status, priority, assignee, description } = req.body;
+    const { status, priority, assignee, title, description } = req.body;
     const id = req.params.id;
     
-    // Update status
-    if (status) {
-      await executeBd(['update', id, '-s', status]);
-    }
+    // Build update args array
+    const updateArgs = ['update', id];
     
-    // Update priority
-    if (priority !== undefined) {
-      await executeBd(['update', id, '-p', priority.toString()]);
-    }
+    if (status) updateArgs.push('-s', status);
+    if (priority !== undefined) updateArgs.push('-p', priority.toString());
+    if (assignee) updateArgs.push('-a', assignee);
+    if (title) updateArgs.push('--title', title);
+    if (description) updateArgs.push('-d', description);
     
-    // Update assignee
-    if (assignee) {
-      await executeBd(['assign', id, assignee]);
+    // Execute single update command with all changes
+    if (updateArgs.length > 2) {
+      await executeBd(updateArgs);
     }
     
     // Get updated issue

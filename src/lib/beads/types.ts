@@ -3,7 +3,7 @@
 
 export type IssueStatus = 'open' | 'in_progress' | 'done';
 export type IssueType = 'bug' | 'feature' | 'task' | 'epic';
-export type Priority = 0 | 1 | 2 | 3; // 0 is highest
+export type Priority = 0 | 1 | 2 | 3 | 4; // 0 is highest, matches bd CLI (P0-P4)
 export type DependencyType = 'blocks' | 'related' | 'parent' | 'child' | 'discovered-from';
 
 export interface Dependency {
