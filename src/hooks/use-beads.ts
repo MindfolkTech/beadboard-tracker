@@ -1,143 +1,121 @@
-// Beads State Management Hook
+// Beads State Management Hook - API Edition
 import { useState, useEffect, useCallback } from 'react';
 import { Issue, CreateIssueInput, UpdateIssueInput, IssueStatus, Dependency } from '@/lib/beads/types';
-import { storage } from '@/lib/beads/storage';
-import { generateIssueId, isIssueReady, sortIssues } from '@/lib/beads/utils';
-import { initializeSampleData } from '@/lib/beads/sample-data';
+import { apiClient } from '@/lib/beads/api-client';
+import { isIssueReady, sortIssues } from '@/lib/beads/utils';
 import { toast } from 'sonner';
 
 export function useBeads() {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Load issues from storage
+  // Load issues from API
   useEffect(() => {
-    // Initialize with sample data if first time
-    const isFirstTime = initializeSampleData();
-    if (isFirstTime) {
-      toast.success('Welcome to Beads! Sample issues loaded.');
-    }
+    let mounted = true;
     
-    const loadedIssues = storage.getIssues();
-    setIssues(loadedIssues);
-    setLoading(false);
+    const loadIssues = async () => {
+      try {
+        await apiClient.checkHealth();
+        const loadedIssues = await apiClient.listIssues();
+        if (mounted) {
+          setIssues(loadedIssues);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (mounted) {
+          toast.error('Cannot connect to beads server. Make sure bd CLI is installed and server is running.');
+          setLoading(false);
+        }
+      }
+    };
+    
+    loadIssues();
+    return () => { mounted = false; };
   }, []);
 
-  // Save issues to storage whenever they change
-  const saveIssues = useCallback((newIssues: Issue[]) => {
-    setIssues(newIssues);
-    storage.saveIssues(newIssues);
+  // Refresh issues from API
+  const refreshIssues = useCallback(async () => {
+    try {
+      const loadedIssues = await apiClient.listIssues();
+      setIssues(loadedIssues);
+    } catch (error) {
+      console.error('Failed to refresh issues:', error);
+    }
   }, []);
 
   // Create a new issue
-  const createIssue = useCallback((input: CreateIssueInput): Issue => {
-    const now = Date.now();
-    const newIssue: Issue = {
-      id: generateIssueId(),
-      title: input.title,
-      description: input.description,
-      status: 'open',
-      type: input.type || 'task',
-      priority: input.priority ?? 2,
-      assignee: input.assignee,
-      dependencies: [],
-      tags: input.tags || [],
-      createdAt: now,
-      updatedAt: now,
-    };
-
-    saveIssues([...issues, newIssue]);
-    toast.success(`Created ${newIssue.id}`);
-    return newIssue;
-  }, [issues, saveIssues]);
+  const createIssue = useCallback(async (input: CreateIssueInput): Promise<Issue> => {
+    try {
+      const newIssue = await apiClient.createIssue(input);
+      await refreshIssues();
+      toast.success(`Created ${newIssue.id}`);
+      return newIssue;
+    } catch (error) {
+      toast.error('Failed to create issue');
+      throw error;
+    }
+  }, [refreshIssues]);
 
   // Update an existing issue
-  const updateIssue = useCallback((id: string, updates: UpdateIssueInput) => {
-    const updatedIssues = issues.map(issue => {
-      if (issue.id === id) {
-        return {
-          ...issue,
-          ...updates,
-          updatedAt: Date.now(),
-        };
-      }
-      return issue;
-    });
-
-    saveIssues(updatedIssues);
-    toast.success(`Updated ${id}`);
-  }, [issues, saveIssues]);
+  const updateIssue = useCallback(async (id: string, updates: UpdateIssueInput) => {
+    try {
+      await apiClient.updateIssue(id, updates);
+      await refreshIssues();
+      toast.success(`Updated ${id}`);
+    } catch (error) {
+      toast.error('Failed to update issue');
+      throw error;
+    }
+  }, [refreshIssues]);
 
   // Close an issue
-  const closeIssue = useCallback((id: string) => {
-    const updatedIssues = issues.map(issue => {
-      if (issue.id === id) {
-        return {
-          ...issue,
-          status: 'done' as IssueStatus,
-          closedAt: Date.now(),
-          updatedAt: Date.now(),
-        };
-      }
-      return issue;
-    });
-
-    saveIssues(updatedIssues);
-    toast.success(`Closed ${id}`);
-  }, [issues, saveIssues]);
+  const closeIssue = useCallback(async (id: string) => {
+    try {
+      await apiClient.updateIssue(id, { status: 'done' });
+      await refreshIssues();
+      toast.success(`Closed ${id}`);
+    } catch (error) {
+      toast.error('Failed to close issue');
+      throw error;
+    }
+  }, [refreshIssues]);
 
   // Delete an issue
-  const deleteIssue = useCallback((id: string) => {
-    const updatedIssues = issues.filter(issue => issue.id !== id);
-    saveIssues(updatedIssues);
-    toast.success(`Deleted ${id}`);
-  }, [issues, saveIssues]);
+  const deleteIssue = useCallback(async (id: string) => {
+    try {
+      await apiClient.deleteIssue(id);
+      await refreshIssues();
+      toast.success(`Deleted ${id}`);
+    } catch (error) {
+      toast.error('Failed to delete issue');
+      throw error;
+    }
+  }, [refreshIssues]);
 
   // Add a dependency
-  const addDependency = useCallback((issueId: string, dependency: Dependency) => {
-    const updatedIssues = issues.map(issue => {
-      if (issue.id === issueId) {
-        // Check if dependency already exists
-        const exists = issue.dependencies.some(
-          dep => dep.type === dependency.type && dep.targetId === dependency.targetId
-        );
-        if (exists) return issue;
+  const addDependency = useCallback(async (issueId: string, dependency: Dependency) => {
+    try {
+      await apiClient.addDependency(issueId, dependency);
+      await refreshIssues();
+      toast.success('Dependency added');
+    } catch (error) {
+      toast.error('Failed to add dependency');
+      throw error;
+    }
+  }, [refreshIssues]);
 
-        return {
-          ...issue,
-          dependencies: [...issue.dependencies, dependency],
-          updatedAt: Date.now(),
-        };
-      }
-      return issue;
-    });
-
-    saveIssues(updatedIssues);
-    toast.success('Dependency added');
-  }, [issues, saveIssues]);
-
-  // Remove a dependency
-  const removeDependency = useCallback((issueId: string, dependency: Dependency) => {
-    const updatedIssues = issues.map(issue => {
-      if (issue.id === issueId) {
-        return {
-          ...issue,
-          dependencies: issue.dependencies.filter(
-            dep => !(dep.type === dependency.type && dep.targetId === dependency.targetId)
-          ),
-          updatedAt: Date.now(),
-        };
-      }
-      return issue;
-    });
-
-    saveIssues(updatedIssues);
-    toast.success('Dependency removed');
-  }, [issues, saveIssues]);
+  // Remove a dependency (not implemented in API yet)
+  const removeDependency = useCallback(async (issueId: string, dependency: Dependency) => {
+    toast.warning('Remove dependency not yet implemented in bd CLI');
+  }, []);
 
   // Get ready issues (no open blockers)
-  const getReadyIssues = useCallback((): Issue[] => {
-    return sortIssues(issues.filter(issue => isIssueReady(issue, issues)));
+  const getReadyIssues = useCallback(async (): Promise<Issue[]> => {
+    try {
+      return await apiClient.getReadyIssues();
+    } catch {
+      return sortIssues(issues.filter(issue => isIssueReady(issue, issues)));
+    }
   }, [issues]);
 
   // Get issues by status

@@ -1,27 +1,24 @@
-// Beads Storage - LocalStorage based for lightweight embedding
+// Beads Storage - API-based connection to bd CLI
 import { Issue } from './types';
-
-const STORAGE_KEY = 'beads_issues';
+import { apiClient } from './api-client';
 
 export const storage = {
-  getIssues: (): Issue[] => {
+  getIssues: async (): Promise<Issue[]> => {
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      return data ? JSON.parse(data) : [];
-    } catch {
+      return await apiClient.listIssues();
+    } catch (error) {
+      console.error('Failed to fetch issues:', error);
       return [];
     }
   },
 
-  saveIssues: (issues: Issue[]): void => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(issues));
-    } catch (error) {
-      console.error('Failed to save issues:', error);
-    }
+  saveIssues: async (issues: Issue[]): Promise<void> => {
+    // Not used with API - individual operations handled by API client
+    console.warn('saveIssues called but not implemented for API storage');
   },
 
-  clear: (): void => {
-    localStorage.removeItem(STORAGE_KEY);
+  clear: async (): Promise<void> => {
+    // Not applicable for bd CLI storage
+    console.warn('clear called but not implemented for API storage');
   },
 };
