@@ -11,9 +11,10 @@ interface KanbanCardProps {
   isSelected: boolean;
   onClick: () => void;
   showBlockerInfo?: boolean;
+  bgColor?: string;
 }
 
-export function KanbanCard({ issue, allIssues, isSelected, onClick, showBlockerInfo = false }: KanbanCardProps) {
+export function KanbanCard({ issue, allIssues, isSelected, onClick, showBlockerInfo = false, bgColor }: KanbanCardProps) {
   const blockers = showBlockerInfo ? getBlockers(issue, allIssues) : [];
   
   const typeIcon = {
@@ -43,7 +44,7 @@ export function KanbanCard({ issue, allIssues, isSelected, onClick, showBlockerI
       onClick={onClick}
       className={cn(
         'p-3 cursor-pointer hover:shadow-md transition-all',
-        'bg-[hsl(var(--surface))]',
+        bgColor || 'bg-[hsl(var(--surface))]',
         isSelected && 'ring-2 ring-garden-green',
         issue.priority <= 1 && priorityColor[issue.priority]
       )}
