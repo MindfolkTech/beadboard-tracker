@@ -3,7 +3,6 @@ import type { Issue } from '@/types/Beads.types';
 import { IssueRow } from './IssueRow';
 import { getEpics, getChildren, getIssuesWithoutParent } from '@/services/beads/beadsUtils.service';
 import { ChevronDown, ChevronRight, Folder } from '@/lib/icons';
-import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';
 
 interface EpicGroupedListProps {

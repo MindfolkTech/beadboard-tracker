@@ -24,9 +24,7 @@ const Index = () => {
     closeIssue,
     deleteIssue,
     addDependency,
-    removeDependency,
-    getReadyIssues,
-    getIssuesByStatus
+    removeDependency
   } = useBeads();
   const [activeView, setActiveView] = useState<ViewType>('board');
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);

@@ -1,6 +1,6 @@
 import type { Issue } from '@/types/Beads.types';
 import { cn } from '@/lib/utils';
-import { Circle, CheckCircle2, Clock } from '@/lib/icons';
+import { Circle, CheckCircle2, Clock, AlertCircle } from '@/lib/icons';
 
 interface IssueRowProps {
   issue: Issue;
@@ -12,13 +12,8 @@ const statusIcons = {
   open: Circle,
   in_progress: Clock,
   done: CheckCircle2,
-};
-
-const priorityLabels = {
-  0: 'Urgent',
-  1: 'High',
-  2: 'Medium',
-  3: 'Low',
+  blocked: AlertCircle,
+  closed: CheckCircle2,
 };
 
 const typeColors = {
