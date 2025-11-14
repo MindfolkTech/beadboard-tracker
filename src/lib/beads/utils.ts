@@ -64,3 +64,28 @@ export function sortIssues(issues: Issue[]): Issue[] {
     return b.updatedAt - a.updatedAt; // newest first
   });
 }
+
+// Get all epics (issues with type: 'epic')
+export function getEpics(allIssues: Issue[]): Issue[] {
+  return allIssues.filter(issue => issue.type === 'epic');
+}
+
+// Get issues without a parent (not epics themselves)
+export function getIssuesWithoutParent(allIssues: Issue[]): Issue[] {
+  return allIssues.filter(issue => 
+    !issue.dependencies.some(dep => dep.type === 'parent') &&
+    issue.type !== 'epic'
+  );
+}
+
+// Get blocked issues (open with unfinished blockers)
+export function getBlockedIssues(allIssues: Issue[]): Issue[] {
+  return allIssues.filter(issue => 
+    issue.status === 'open' && !isIssueReady(issue, allIssues)
+  );
+}
+
+// Get ready issues (open with no blockers)
+export function getReadyIssuesLocal(allIssues: Issue[]): Issue[] {
+  return allIssues.filter(issue => isIssueReady(issue, allIssues));
+}

@@ -1,17 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useBeads } from '@/hooks/use-beads';
-import { IssueList } from '@/components/beads/IssueList';
+import { KanbanBoard } from '@/components/beads/KanbanBoard';
+import { EpicGroupedList } from '@/components/beads/EpicGroupedList';
 import { IssueDetail } from '@/components/beads/IssueDetail';
 import { CreateIssueDialog } from '@/components/beads/CreateIssueDialog';
-import { StatusTabs } from '@/components/beads/StatusTabs';
 import { WelcomeBanner } from '@/components/beads/WelcomeBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Zap } from 'lucide-react';
+import { Plus, Search, Zap, List, LayoutGrid } from 'lucide-react';
 import { Issue } from '@/lib/beads/types';
 import { toast } from 'sonner';
+import { cn } from '@/lib/utils';
 
-type ViewType = 'all' | 'backlog' | 'active' | 'ready' | 'done';
+type ViewType = 'list' | 'board';
 
 const Index = () => {
   const {
@@ -25,56 +26,27 @@ const Index = () => {
     getIssuesByStatus,
   } = useBeads();
 
-  const [activeView, setActiveView] = useState<ViewType>('all');
+  const [activeView, setActiveView] = useState<ViewType>('board');
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Get filtered issues based on active view
+  // Get filtered issues based on search
   const getFilteredIssues = (): Issue[] => {
-    let filtered: Issue[] = [];
-
-    switch (activeView) {
-      case 'backlog':
-        filtered = getIssuesByStatus('open');
-        break;
-      case 'active':
-        filtered = getIssuesByStatus('in_progress');
-        break;
-      case 'ready':
-        filtered = issues.filter(issue => issue.status === 'open');
-        break;
-      case 'done':
-        filtered = getIssuesByStatus('done');
-        break;
-      default:
-        filtered = issues;
+    if (!searchQuery.trim()) {
+      return issues;
     }
 
-    // Apply search filter
-    if (searchQuery.trim()) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        issue =>
-          issue.id.toLowerCase().includes(query) ||
-          issue.title.toLowerCase().includes(query) ||
-          issue.description?.toLowerCase().includes(query)
-      );
-    }
-
-    return filtered;
+    const query = searchQuery.toLowerCase();
+    return issues.filter(
+      issue =>
+        issue.id.toLowerCase().includes(query) ||
+        issue.title.toLowerCase().includes(query) ||
+        issue.description?.toLowerCase().includes(query)
+    );
   };
 
   const filteredIssues = getFilteredIssues();
-
-  // Calculate counts for tabs
-  const counts: Record<ViewType, number> = {
-    all: issues.length,
-    backlog: getIssuesByStatus('open').length,
-    active: getIssuesByStatus('in_progress').length,
-    ready: getIssuesByStatus('open').length,
-    done: getIssuesByStatus('done').length,
-  };
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -163,21 +135,49 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Status Tabs */}
-          <StatusTabs activeView={activeView} onViewChange={setActiveView} counts={counts} />
+          {/* View Toggle */}
+          <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-[hsl(var(--surface))]">
+            <button
+              onClick={() => setActiveView('list')}
+              className={cn(
+                'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                activeView === 'list'
+                  ? 'bg-garden-green text-white'
+                  : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]'
+              )}
+            >
+              <List className="h-4 w-4" />
+              All Issues
+            </button>
+            <button
+              onClick={() => setActiveView('board')}
+              className={cn(
+                'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
+                activeView === 'board'
+                  ? 'bg-garden-green text-white'
+                  : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]'
+              )}
+            >
+              <LayoutGrid className="h-4 w-4" />
+              Board
+            </button>
+          </div>
 
-          {/* Issue List */}
+          {/* Content */}
           <div className="flex-1 overflow-y-auto">
-            <IssueList
-              issues={filteredIssues}
-              selectedId={selectedIssue?.id}
-              onSelectIssue={setSelectedIssue}
-              emptyMessage={
-                searchQuery
-                  ? 'No issues match your search'
-                  : `No ${activeView === 'all' ? '' : activeView} issues`
-              }
-            />
+            {activeView === 'list' ? (
+              <EpicGroupedList
+                issues={filteredIssues}
+                onSelectIssue={setSelectedIssue}
+                selectedIssueId={selectedIssue?.id}
+              />
+            ) : (
+              <KanbanBoard
+                issues={filteredIssues}
+                onSelectIssue={setSelectedIssue}
+                selectedIssueId={selectedIssue?.id}
+              />
+            )}
           </div>
         </div>
 
