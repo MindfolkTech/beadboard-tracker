@@ -76,14 +76,16 @@ AI agents should use `bd` CLI directly:
 # List ready work
 bd ready --json
 
-# Claim an issue
-bd assign bd-a1b2 "AI Agent Name"
+# Assign an issue
+bd update bd-a1b2 --assignee "AI Agent Name" --json
 
 # Start work
-bd update bd-a1b2 --status in_progress
+bd update bd-a1b2 --status in_progress --json
 
 # Complete work
-bd update bd-a1b2 --status done
+bd close bd-a1b2 --reason "Completed" --json
+# OR
+bd update bd-a1b2 --status closed --json
 ```
 
 No need to interact with the server - the CLI and web UI share the same database.

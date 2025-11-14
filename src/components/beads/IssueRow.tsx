@@ -43,7 +43,7 @@ export function IssueRow({ issue, isSelected, onClick }: IssueRowProps) {
       <StatusIcon
         className={cn(
           'h-4 w-4 flex-shrink-0',
-          issue.status === 'done' ? 'text-success-text' : 'text-text-muted'
+          issue.status === 'closed' ? 'text-success-text' : 'text-text-muted'
         )}
       />
 
@@ -53,7 +53,7 @@ export function IssueRow({ issue, isSelected, onClick }: IssueRowProps) {
           <span
             className={cn(
               'text-sm font-normal text-text-primary truncate',
-              issue.status === 'done' && 'line-through text-text-muted'
+              issue.status === 'closed' && 'line-through text-text-muted'
             )}
           >
             {issue.title}

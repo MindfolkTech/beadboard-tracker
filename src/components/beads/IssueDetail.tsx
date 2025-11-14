@@ -43,7 +43,7 @@ export function IssueDetail({
     if (issue.status === 'open') {
       onUpdateStatus(issue.id, 'in_progress');
     } else if (issue.status === 'in_progress') {
-      onUpdateStatus(issue.id, 'done');
+      onUpdateStatus(issue.id, 'closed');
     }
   };
 
@@ -216,7 +216,7 @@ export function IssueDetail({
           Delete
         </Button>
 
-        {issue.status !== 'done' && (
+        {issue.status !== 'closed' && (
           <Button
             onClick={handleStatusChange}
             className="bg-btn-primary text-btn-primary-foreground hover:opacity-90"

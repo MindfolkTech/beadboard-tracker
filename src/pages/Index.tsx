@@ -124,7 +124,7 @@ const Index = () => {
     updateIssue(id, {
       status
     });
-    if (status === 'done') {
+    if (status === 'closed') {
       closeIssue(id);
     }
     // Refresh selected issue

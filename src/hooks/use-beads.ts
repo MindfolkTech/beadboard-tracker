@@ -71,7 +71,7 @@ export function useBeads() {
   // Close an issue
   const closeIssue = useCallback(async (id: string) => {
     try {
-      await apiClient.updateIssue(id, { status: 'done' });
+      await apiClient.updateIssue(id, { status: 'closed' });
       await refreshIssues();
       toast.success(`Closed ${id}`);
     } catch (error) {

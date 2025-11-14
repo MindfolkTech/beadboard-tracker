@@ -14,7 +14,7 @@ export function isIssueReady(issue: Issue, allIssues: Issue[]): boolean {
   const blockers = issue.dependencies
     .filter(dep => dep.type === 'blocks')
     .map(dep => allIssues.find(i => i.id === dep.targetId))
-    .filter((i): i is Issue => !!i && i.status !== 'done');
+    .filter((i): i is Issue => !!i && i.status !== 'closed');
   
   return blockers.length === 0;
 }
