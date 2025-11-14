@@ -135,7 +135,58 @@ Beads operates in two modes that share the same SQLite database in `.beads/`:
 
 ### Creating Issues
 
-Press `⌘K` (Mac) or `Ctrl+K` (Windows/Linux) to open the create dialog, or click the "New Issue" button.
+**Quick Creation Dropdown:**
+- Click "New Issue" dropdown to create specific issue types:
+  - **New Task** - Default work items
+  - **New Feature** - Feature requests
+  - **New Bug** - Bug reports  
+  - **New Epic** - Parent issues for grouping work
+
+**Keyboard Shortcut:**
+- Press `⌘K` (Mac) or `Ctrl+K` (Windows/Linux) to open the create dialog
+
+**Creation Form Fields:**
+- Title (required)
+- Description (markdown supported)
+- Type: Task, Feature, Bug, or Epic
+- Priority: P0 (highest) through P4
+- Assignee (optional)
+- Parent Epic (optional) - Assign to an existing epic for organization
+
+### Parent/Epic Management
+
+**Assigning Parents During Creation:**
+- Select a parent epic from the "Parent Epic" dropdown when creating any issue
+- Only epics appear in the parent selection list
+- Creates a hierarchical relationship for better organization
+
+**Managing Parents After Creation:**
+- Open an issue's detail panel
+- Click "Assign to Epic" to assign a parent epic
+- Click "Change Parent" to switch to a different epic
+- Click "Remove Parent" to unlink from the current epic
+- System prevents circular dependencies automatically
+
+**Epic Benefits:**
+- Group related issues together
+- Track progress across multiple issues
+- View completion percentage in list view
+- Organize work hierarchically
+
+### View Modes
+
+**Board View (Kanban):**
+- Visual columns for Open, In Progress, and Done statuses
+- Drag-and-drop cards between columns
+- Compact card view with key information
+- Ideal for workflow visualization
+
+**List View (Epic-Grouped):**
+- Issues grouped under their parent epics
+- Expandable/collapsible epic sections
+- Progress bars showing epic completion percentage
+- Orphaned issues (no parent) listed separately
+- Ideal for hierarchical project views
 
 ### Viewing Issues
 
@@ -181,6 +232,9 @@ bd ready --json
 # Create a new issue
 bd create "Fix authentication bug" -t bug -p 1 -d "Users can't login"
 
+# Create an epic for grouping work
+bd create "User Authentication Epic" -t epic -p 1 -d "Complete auth overhaul"
+
 # Claim an issue
 bd assign bd-a1b2 "AI Agent Name"
 
@@ -196,8 +250,14 @@ bd update bd-a1b2 --title "New title" -d "Updated description"
 # Update multiple fields at once
 bd update bd-a1b2 --status in_progress -p 0 --title "Critical fix"
 
+# Add a parent dependency (assign to epic)
+bd dep add bd-a1b2 bd-epic1 --type parent
+
 # Add a blocker dependency
-bd link bd-a1b2 --blocks bd-c3d4
+bd dep add bd-a1b2 bd-c3d4 --type blocks
+
+# Remove a dependency
+bd dep remove bd-a1b2 bd-c3d4
 
 # Show issue details
 bd show bd-a1b2 --json
