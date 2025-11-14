@@ -14,7 +14,8 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
 ✨ **Core Functionality**
 - Hash-based issue IDs (bd-a1b2, bd-c3d4, etc.) to prevent collisions
 - Four issue states: Open, In Progress, Done
-- Priority levels (P0-P3) and issue types (Bug, Feature, Task, Epic)
+- Priority levels (P0-P4) and issue types (Bug, Feature, Task, Epic)
+- Title and description editing for all issues
 - Dependency tracking (blocks, parent/child, related, discovered-from)
 - Ready work detection (issues with no open blockers)
 
@@ -22,14 +23,15 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
 - Clean, minimal design with keyboard shortcuts
 - Status-based views (All, Backlog, Active, Ready, Done)
 - Real-time search and filtering
-- Side panel for issue details
+- Side panel for issue details with dependency navigation
 - Quick issue creation (⌘K / Ctrl+K)
+- Welcome banner for new users
 
 💾 **Lightweight Storage**
-- LocalStorage-based (no backend required)
+- Dual storage mode: Bridge server (primary) with LocalStorage fallback
 - Easy to embed in existing projects
 - Export/import capability
-- Works offline
+- Works offline with LocalStorage mode
 
 ## Quick Start
 
@@ -61,7 +63,7 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
    ```
 
 3. **Open the interface:**
-   - Web UI: http://localhost:8080
+   - Web UI: http://localhost:5173
    - Bridge Server: http://localhost:3001
 
 ### Embedding in Your Project
@@ -127,7 +129,8 @@ Click any issue to open the detail panel on the right, where you can:
 ### Keyboard Shortcuts
 
 - `⌘K` / `Ctrl+K` - Create new issue
-- `Escape` - Close detail panel
+- `Escape` - Close detail panel or dialogs
+- Click issue IDs in dependencies to navigate between related issues
 
 ## Design System
 
@@ -160,6 +163,12 @@ bd update bd-a1b2 --status in_progress
 # Mark issue as done
 bd update bd-a1b2 --status done
 
+# Update title and description
+bd update bd-a1b2 --title "New title" -d "Updated description"
+
+# Update multiple fields at once
+bd update bd-a1b2 --status in_progress -p 0 --title "Critical fix"
+
 # Add a blocker dependency
 bd link bd-a1b2 --blocks bd-c3d4
 
@@ -189,7 +198,7 @@ Issues are stored in `.beads/beads.db` (SQLite) and synced via git as JSONL. The
   description?: string;
   status: 'open' | 'in_progress' | 'done';
   type: 'bug' | 'feature' | 'task' | 'epic';
-  priority: 0 | 1 | 2 | 3; // 0 is highest
+  priority: 0 | 1 | 2 | 3 | 4; // 0 is highest (P0-P4)
   assignee?: string;
   dependencies: Dependency[];
   tags?: string[];
