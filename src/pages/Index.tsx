@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useBeads } from '@/hooks/use-beads';
+import { useBeads } from '@/hooks/beads/useBeads';
 import { KanbanBoard } from '@/components/beads/KanbanBoard';
 import { EpicGroupedList } from '@/components/beads/EpicGroupedList';
 import { IssueDetail } from '@/components/beads/IssueDetail';
@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Plus, Search, Zap, List, LayoutGrid, ChevronDown, FileText, Bug, Sparkles, Package } from 'lucide-react';
-import { Issue, IssueType, Priority } from '@/lib/beads/types';
+import type { Issue, IssueType, Priority } from '@/types/Beads.types';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 type ViewType = 'list' | 'board';
