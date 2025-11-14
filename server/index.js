@@ -40,10 +40,23 @@ async function executeBd(args) {
       }
 
       try {
-        const result = stdout.trim() ? JSON.parse(stdout) : {};
+        // Extract JSON from output (handle warnings/messages before JSON)
+        const lines = stdout.split('\n');
+        const jsonLine = lines.find(line => {
+          const trimmed = line.trim();
+          return trimmed.startsWith('{') || trimmed.startsWith('[');
+        });
+        
+        if (!jsonLine) {
+          // Empty result is OK for some commands
+          resolve({});
+          return;
+        }
+        
+        const result = JSON.parse(jsonLine);
         resolve(result);
       } catch (error) {
-        reject(new Error(`Failed to parse bd output: ${error.message}`));
+        reject(new Error(`Failed to parse bd output: ${error.message}\nOutput: ${stdout}`));
       }
     });
   });
@@ -63,7 +76,7 @@ app.get('/api/issues', async (req, res) => {
     if (req.query.assignee) args.push('--assignee', req.query.assignee);
     
     const result = await executeBd(args);
-    res.json(result.issues || []);
+    res.json(Array.isArray(result) ? result : []);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -82,14 +95,14 @@ app.get('/api/issues/:id', async (req, res) => {
 // Create issue
 app.post('/api/issues', async (req, res) => {
   try {
-    const { title, description, type, priority, assignee, tags } = req.body;
+    const { title, description, type, priority, assignee, labels } = req.body;
     const args = ['create', title];
     
     if (description) args.push('-d', description);
     if (type) args.push('-t', type);
     if (priority !== undefined) args.push('-p', priority.toString());
     if (assignee) args.push('-a', assignee);
-    if (tags && tags.length) args.push('-l', tags.join(','));
+    if (labels && labels.length) args.push('-l', labels.join(','));
     
     const result = await executeBd(args);
     res.json(result);
@@ -169,7 +182,7 @@ app.delete('/api/issues/:id/dependencies/:targetId', async (req, res) => {
 app.get('/api/ready', async (req, res) => {
   try {
     const result = await executeBd(['ready']);
-    res.json(result.issues || []);
+    res.json(Array.isArray(result) ? result : []);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -16,7 +16,7 @@ export function KanbanBoard({
   const blockedIssues = getBlockedIssues(issues);
   const readyIssues = getReadyIssuesLocal(issues);
   const inProgressIssues = issues.filter(i => i.status === 'in_progress');
-  const doneIssues = issues.filter(i => i.status === 'done');
+  const doneIssues = issues.filter(i => i.status === 'closed');
   const columns = [{
     title: 'Blocked',
     icon: <AlertCircle className="h-4 w-4" />,

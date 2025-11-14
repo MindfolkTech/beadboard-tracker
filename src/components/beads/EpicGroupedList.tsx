@@ -36,7 +36,7 @@ export function EpicGroupedList({ issues, onSelectIssue, selectedIssueId }: Epic
     const children = getChildren(epicId, issues);
     if (children.length === 0) return { done: 0, total: 0, percentage: 0 };
     
-    const done = children.filter(c => c.status === 'done').length;
+    const done = children.filter(c => c.status === 'closed').length;
     const total = children.length;
     const percentage = (done / total) * 100;
     

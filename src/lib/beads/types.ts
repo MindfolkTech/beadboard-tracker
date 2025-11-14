@@ -1,7 +1,7 @@
 // Beads Issue Tracking System - Core Types
 // Based on steveyegge/beads specification
 
-export type IssueStatus = 'open' | 'in_progress' | 'done';
+export type IssueStatus = 'open' | 'in_progress' | 'blocked' | 'closed';
 export type IssueType = 'bug' | 'feature' | 'task' | 'epic';
 export type Priority = 0 | 1 | 2 | 3 | 4; // 0 is highest, matches bd CLI (P0-P4)
 export type DependencyType = 'blocks' | 'related' | 'parent' | 'child' | 'discovered-from';
@@ -23,7 +23,7 @@ export interface Issue {
   createdAt: number;
   updatedAt: number;
   closedAt?: number;
-  tags?: string[];
+  labels?: string[];
 }
 
 export interface CreateIssueInput {
@@ -32,7 +32,7 @@ export interface CreateIssueInput {
   type?: IssueType;
   priority?: Priority;
   assignee?: string;
-  tags?: string[];
+  labels?: string[];
 }
 
 export interface UpdateIssueInput {
@@ -42,7 +42,7 @@ export interface UpdateIssueInput {
   type?: IssueType;
   priority?: Priority;
   assignee?: string;
-  tags?: string[];
+  labels?: string[];
 }
 
 export interface BeadsState {
