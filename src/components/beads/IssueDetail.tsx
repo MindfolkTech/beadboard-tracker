@@ -1,9 +1,14 @@
+import { useState } from 'react';
 import { Issue } from '@/lib/beads/types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { X, CheckCircle2, Play, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { X, CheckCircle2, Play, Trash2, Link2 } from 'lucide-react';
 import { getBlockers, getBlocked, getChildren, getParent } from '@/lib/beads/utils';
+import { toast } from 'sonner';
 
 interface IssueDetailProps {
   issue: Issue;
@@ -12,6 +17,8 @@ interface IssueDetailProps {
   onUpdateStatus: (id: string, status: Issue['status']) => void;
   onDelete: (id: string) => void;
   onNavigate: (issue: Issue) => void;
+  onAssignParent: (issueId: string, parentId: string) => Promise<void>;
+  onRemoveParent: (issueId: string, parentId: string) => Promise<void>;
 }
 
 export function IssueDetail({
@@ -21,7 +28,12 @@ export function IssueDetail({
   onUpdateStatus,
   onDelete,
   onNavigate,
+  onAssignParent,
+  onRemoveParent,
 }: IssueDetailProps) {
+  const [showParentSelector, setShowParentSelector] = useState(false);
+  const [selectedParentId, setSelectedParentId] = useState<string>('');
+  
   const blockers = getBlockers(issue, allIssues);
   const blocked = getBlocked(issue.id, allIssues);
   const children = getChildren(issue.id, allIssues);
@@ -32,6 +44,25 @@ export function IssueDetail({
       onUpdateStatus(issue.id, 'in_progress');
     } else if (issue.status === 'in_progress') {
       onUpdateStatus(issue.id, 'done');
+    }
+  };
+
+  const handleParentChange = async () => {
+    if (!selectedParentId) return;
+    
+    try {
+      // Remove old parent if exists
+      if (parent) {
+        await onRemoveParent(issue.id, parent.id);
+      }
+      
+      // Add new parent
+      await onAssignParent(issue.id, selectedParentId);
+      setShowParentSelector(false);
+      setSelectedParentId('');
+      toast.success('Parent updated');
+    } catch (error) {
+      toast.error('Failed to update parent');
     }
   };
 
@@ -85,18 +116,38 @@ export function IssueDetail({
           </div>
         </div>
 
-        {parent && (
-          <div>
-            <Separator className="mb-4" />
-            <h3 className="text-sm font-medium text-text-secondary mb-2">Parent</h3>
-            <button
-              onClick={() => onNavigate(parent)}
-              className="text-sm text-garden-green hover:underline"
+        <div>
+          <Separator className="mb-4" />
+          <h3 className="text-sm font-medium text-text-secondary mb-2">Parent Epic</h3>
+          {parent ? (
+            <div className="flex items-center justify-between p-2 bg-surface-accent rounded">
+              <button
+                onClick={() => onNavigate(parent)}
+                className="text-sm text-garden-green hover:underline flex items-center gap-2"
+              >
+                <span>📦</span>
+                <span>{parent.id} - {parent.title}</span>
+              </button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowParentSelector(true)}
+              >
+                Change
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowParentSelector(true)}
+              className="w-full"
             >
-              {parent.id} - {parent.title}
-            </button>
-          </div>
-        )}
+              <Link2 className="h-4 w-4 mr-2" />
+              Assign to Epic
+            </Button>
+          )}
+        </div>
 
         {children.length > 0 && (
           <div>
@@ -184,6 +235,59 @@ export function IssueDetail({
           </Button>
         )}
       </div>
+
+      {/* Parent Selector Dialog */}
+      <Dialog open={showParentSelector} onOpenChange={setShowParentSelector}>
+        <DialogContent className="bg-surface border-border">
+          <DialogHeader>
+            <DialogTitle className="text-text-primary">
+              {parent ? 'Change Parent Epic' : 'Assign to Epic'}
+            </DialogTitle>
+          </DialogHeader>
+          
+          {parent && (
+            <Alert className="bg-surface-accent border-border">
+              <AlertDescription className="text-text-secondary">
+                Current parent will be removed before assigning new parent.
+              </AlertDescription>
+            </Alert>
+          )}
+          
+          <div className="space-y-2">
+            <Select
+              value={selectedParentId}
+              onValueChange={setSelectedParentId}
+            >
+              <SelectTrigger className="bg-warm-white border-border">
+                <SelectValue placeholder="Select epic" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                {allIssues
+                  .filter(i => i.type === 'epic' && i.id !== issue.id)
+                  .map(epic => (
+                    <SelectItem key={epic.id} value={epic.id}>
+                      📦 {epic.id} - {epic.title} ({epic.status})
+                    </SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowParentSelector(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleParentChange}
+              disabled={!selectedParentId}
+              className="bg-btn-primary text-btn-primary-foreground"
+            >
+              {parent ? 'Change Parent' : 'Assign'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
