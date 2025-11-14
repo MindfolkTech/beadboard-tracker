@@ -28,7 +28,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
   const [type, setType] = useState<IssueType>(defaultType || 'task');
   const [priority, setPriority] = useState<Priority>(2);
   const [assignee, setAssignee] = useState('');
-  const [parentId, setParentId] = useState<string>('');
+  const [parentId, setParentId] = useState<string>('__none__');
 
   // Update type when defaultType changes
   useEffect(() => {
@@ -47,7 +47,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
       type,
       priority,
       assignee: assignee.trim() || undefined,
-      parentId: parentId || undefined,
+      parentId: parentId && parentId !== '__none__' ? parentId : undefined,
     });
 
     // Reset form
@@ -56,7 +56,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
     setType(defaultType || 'task');
     setPriority(2);
     setAssignee('');
-    setParentId('');
+    setParentId('__none__');
     onOpenChange(false);
   };
 
@@ -141,7 +141,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
                 <SelectValue placeholder="No parent" />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
-                <SelectItem value="">No parent</SelectItem>
+                <SelectItem value="__none__">No parent</SelectItem>
                 {allIssues
                   .filter(i => i.type === 'epic')
                   .map(epic => (
