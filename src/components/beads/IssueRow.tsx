@@ -1,4 +1,4 @@
-import { Issue } from '@/lib/beads/types';
+import type { Issue } from '@/types/Beads.types';
 import { cn } from '@/lib/utils';
 import { Circle, CheckCircle2, Clock } from 'lucide-react';
 

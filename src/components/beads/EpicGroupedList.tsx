@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Issue } from '@/lib/beads/types';
+import type { Issue } from '@/types/Beads.types';
 import { IssueRow } from './IssueRow';
-import { getEpics, getChildren, getIssuesWithoutParent } from '@/lib/beads/utils';
+import { getEpics, getChildren, getIssuesWithoutParent } from '@/services/beads/beadsUtils.service';
 import { ChevronDown, ChevronRight, Folder } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Progress } from '@/components/ui/progress';

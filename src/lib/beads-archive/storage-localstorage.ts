@@ -2,7 +2,7 @@
 // This file is kept for reference only
 // The project now uses the bd CLI via API bridge
 
-import { Issue } from '../beads/types';
+import type { Issue } from '@/types/Beads.types';
 
 const STORAGE_KEY = 'beads_issues';
 
