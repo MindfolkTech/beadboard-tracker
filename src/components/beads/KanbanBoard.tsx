@@ -39,7 +39,7 @@ export function KanbanBoard({
     bgColor: 'bg-blue-500/5',
     showBlockerInfo: false
   }, {
-    title: 'Done',
+    title: 'Closed',
     icon: <CheckSquare className="h-4 w-4" />,
     issues: doneIssues,
     color: 'text-gray-600 dark:text-gray-400',
@@ -47,7 +47,7 @@ export function KanbanBoard({
     showBlockerInfo: false
   }];
   const activeColumns = columns.slice(0, 3); // Blocked, Ready, In Progress
-  const doneColumn = columns[3]; // Done
+  const doneColumn = columns[3]; // Closed
 
   return <div className="flex flex-col gap-4 h-full p-6">
       {/* Top 3 Columns */}
@@ -73,7 +73,7 @@ export function KanbanBoard({
           </div>)}
       </div>
 
-      {/* Done Section - Horizontal */}
+      {/* Closed Section - Horizontal */}
       <div className="flex flex-col">
         {/* Header */}
         <div className={cn('flex items-center justify-between p-3 rounded-t-lg', doneColumn.bgColor)}>
