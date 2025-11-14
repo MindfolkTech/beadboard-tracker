@@ -22,14 +22,14 @@ export function KanbanBoard({
     icon: <AlertCircle className="h-4 w-4" />,
     issues: blockedIssues,
     color: 'text-red-600 dark:text-red-400',
-    bgColor: 'bg-red-500/5',
+    bgColor: 'bg-warning',
     showBlockerInfo: true
   }, {
     title: 'Ready',
     icon: <CheckCircle className="h-4 w-4" />,
     issues: readyIssues,
     color: 'text-green-600 dark:text-green-400',
-    bgColor: 'bg-green-500/5',
+    bgColor: 'bg-success',
     showBlockerInfo: false
   }, {
     title: 'In Progress',
