@@ -133,7 +133,7 @@ const Index = () => {
         {/* Main Panel */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-surface">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-[hsl(var(--warm-white))]">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <Zap className="h-5 w-5 text-garden-green" />
