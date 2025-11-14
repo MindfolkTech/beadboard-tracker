@@ -1,0 +1,217 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Focus Ring System */
+    --focus-ring: 0 0% 100% / 0; /* default noop */
+    
+    /* Core Brand Colors */
+    --jovial-jade: 151 23% 29%; /* #3A5949 - becomes Sage Deep */
+    --garden-green: 151 19% 46%; /* #5E8C77 - becomes Sage Meadow */
+    --elated-emerald: 151 19% 46%; /* #5E8C77 - consolidated */
+
+    /* Surface & Background */
+    --warm-white: 33 71% 97%; /* #FCF9F6 - subtle update */
+    --surface: 0 0% 100%; /* #FFFFFF - no change */
+    --surface-accent: 150 22% 93%; /* #EBF1ED - becomes Sage Mist */
+
+    /* Text & Border */
+    --text-primary: 151 23% 29%; /* #3A5949 - becomes Sage Deep */
+    --text-secondary: 210 8% 21%; /* #2F353A - becomes Ink Slate */
+    --text-muted: 210 4% 50%; /* #7A8085 - new dedicated muted */
+    --ink-slate: 210 8% 21%; /* #2F353A - subtle update */
+    --on-dark: 0 0% 100%; /* #FFFFFF - becomes on-brand */
+    --text-black: 0 0% 0%; /* #000000 - no change, for alerts */
+    --border: 31 27% 90%; /* #EAE3DC - warmer border */
+
+    /* Button Colors */
+    --btn-primary-bg: 151 19% 46%; /* #5E8C77 - Sage Meadow */
+    --btn-primary-text: 0 0% 100%; /* #FFFFFF - no change */
+    --btn-secondary-bg: 0 0% 0%; /* transparent */
+    --btn-secondary-text: 151 19% 46%; /* #5E8C77 - Sage Meadow */
+    --btn-tertiary-text: 151 23% 29%; /* #3A5949 - Sage Deep */
+    --btn-accent-bg: 27 100% 83%; /* #FFCBAA - becomes Peach Sorbet */
+    --btn-accent-text: 151 23% 29%; /* #3A5949 - becomes on-accent */
+    --btn-cta-bg: 151 19% 46%; /* #5E8C77 - aligns with Primary */
+    --btn-cta-text: 0 0% 100%; /* #FFFFFF - for contrast */
+
+    /* Tag System Colors */
+    --tag-personality-bg: 150 22% 93%; /* #EBF1ED - becomes Sage Mist (swapped from specialty) */
+    --tag-personality-text: 151 23% 29%; /* #3A5949 - becomes Sage Deep (swapped from specialty) */
+    --tag-modality-bg: 28 100% 96%; /* #FFF3EB - becomes Peach Fuzz (swapped from personality) */
+    --tag-modality-text: 19 54% 47%; /* #B35F3A - Revised for AA (swapped from personality) */
+    --tag-specialty-bg: 28 100% 96%; /* #FFF3EB - becomes Peach Fuzz (swapped from personality) */
+    --tag-specialty-text: 19 54% 47%; /* #B35F3A - Revised for AA (swapped from personality) */
+    --tag-language-bg: 31 27% 90%; /* #EAE3DC - uses Border color */
+    --tag-language-text: 210 8% 21%; /* #2F353A - uses Ink Slate */
+    --tag-misc-bg: 31 27% 90%; /* #EAE3DC - uses Border color */
+    --tag-misc-text: 210 8% 21%; /* #2F353A - uses Ink Slate */
+
+    /* System Message Colors */
+    --success-bg: 150 22% 93%; /* #EBF1ED - becomes Sage Mist */
+    --success-text: 151 23% 29%; /* #3A5949 - for contrast */
+    --warning-bg: 28 100% 96%; /* #FFF3EB - becomes Peach Fuzz */
+    --warning-text: 19 54% 47%; /* #B35F3A - Revised for AA */
+    --error-bg: 5 78% 92%; /* #FADBD8 - new dedicated error */
+    --error-text: 0 46% 42%; /* #9E3B3B - new dedicated error */
+    --info-bg: 211 48% 93%; /* #E3ECF5 - new dedicated info */
+    --info-text: 223 47% 42%; /* #3B599E - new dedicated info */
+
+    /* Progress & Motion */
+    --progress-bar: 151 19% 46%; /* var(--garden-green) */
+
+    /* Overlay & Modal System */
+    --overlay-dark: 151 19% 15%;
+    --overlay-light: 150 22% 92%;
+    --modal-backdrop: var(--overlay-dark) / 0.8;
+    --video-overlay: var(--overlay-dark) / 0.6;
+    --hover-overlay: var(--overlay-dark) / 0.2;
+
+    /* Typography Tokens */
+    --font-primary: 'Crimson Pro', Georgia, serif;
+    --font-secondary: 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+    --text-xs: clamp(0.75rem, 0.70rem + 0.25vw, 0.875rem);
+    --text-sm: clamp(0.875rem, 0.80rem + 0.375vw, 1rem);
+    --text-base: clamp(1rem, 0.90rem + 0.50vw, 1.125rem);
+    --text-lg: clamp(1.125rem, 1.00rem + 0.625vw, 1.25rem);
+    --text-xl: clamp(1.25rem, 1.10rem + 0.75vw, 1.50rem);
+    --text-2xl: clamp(1.5rem, 1.30rem + 1.00vw, 1.875rem);
+    --text-3xl: clamp(1.875rem, 1.50rem + 1.875vw, 2.25rem);
+
+    /* Spacing Tokens */
+    --touch-target-min: 44px;
+    --touch-target-comfort: 56px;
+    --space-xs: clamp(4px, 2px + 1vw, 8px);
+    --space-sm: clamp(8px, 4px + 1vw, 12px);
+    --space-md: clamp(16px, 8px + 2vw, 24px);
+    --space-lg: clamp(24px, 12px + 2vw, 32px);
+    --space-xl: clamp(32px, 16px + 3vw, 48px);
+    --space-2xl: clamp(48px, 24px + 4vw, 64px);
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-pill: 9999px;
+    --radius-avatar: 50%;
+
+    /* Motion & Animation */
+    --motion-progress: all 300ms ease-in-out;
+    --motion-swipe: transform 200ms ease-in-out, opacity 200ms ease-in-out;
+
+    /* Admin Layout Tokens */
+    --admin-sidebar-width-expanded: 16rem; /* 256px */
+    --admin-sidebar-width-collapsed: 4rem; /* 64px */
+    --admin-sidebar-width: var(--admin-sidebar-width-expanded);
+
+    /* Shadcn compatibility mapping */
+    --background: var(--warm-white);
+    --foreground: var(--text-primary);
+    --card: var(--surface);
+    --card-foreground: var(--text-primary);
+    --popover: var(--surface);
+    --popover-foreground: var(--text-primary);
+    --primary: var(--garden-green);
+    --primary-foreground: var(--btn-primary-text);
+    --secondary: var(--surface-accent);
+    --secondary-foreground: var(--text-primary);
+    --muted: var(--surface-accent);
+    --muted-foreground: var(--text-secondary);
+    --accent: var(--surface-accent);
+    --accent-foreground: var(--text-primary);
+    --destructive: var(--error-bg);
+    --destructive-foreground: var(--error-text);
+    --input: var(--border);
+    --ring: var(--garden-green);
+    --radius: var(--radius-md);
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+  
+  /* High contrast mode */
+  :root[data-contrast="high"] {
+    --text-primary: 0 0% 0%; /* Pure black */
+    --text-secondary: 0 0% 20%; /* Dark gray */
+    --text-muted: 0 0% 30%; /* Medium gray */
+    --border: 0 0% 0%; /* Black borders */
+    --btn-primary-bg: 0 0% 0%; /* Black buttons */
+    --btn-primary-text: 0 0% 100%; /* White text */
+    --btn-secondary-bg: 0 0% 100%; /* White background */
+    --btn-secondary-text: 0 0% 0%; /* Black text */
+    --btn-tertiary-text: 0 0% 0%; /* Black text */
+    --btn-accent-bg: 0 0% 100%; /* White background */
+    --btn-accent-text: 0 0% 0%; /* Black text */
+    --btn-cta-bg: 0 0% 100%; /* White background */
+    --btn-cta-text: 0 0% 0%; /* Black text */
+    --ring: 0 0% 0%; /* Black focus rings */
+  }
+  
+  /* Dark mode */
+  .dark {
+    --background: 0 0% 3%; /* Very dark background */
+    --foreground: 0 0% 98%; /* Very light text */
+    --card: 0 0% 5%; /* Dark card background */
+    --card-foreground: 0 0% 98%; /* Light card text */
+    --popover: 0 0% 5%; /* Dark popover */
+    --popover-foreground: 0 0% 98%; /* Light popover text */
+    --primary: 0 0% 98%; /* Light primary */
+    --primary-foreground: 0 0% 3%; /* Dark primary text */
+    --secondary: 0 0% 8%; /* Dark secondary */
+    --secondary-foreground: 0 0% 98%; /* Light secondary text */
+    --muted: 0 0% 8%; /* Dark muted */
+    --muted-foreground: 0 0% 60%; /* Medium muted text */
+    --accent: 0 0% 8%; /* Dark accent */
+    --accent-foreground: 0 0% 98%; /* Light accent text */
+    --destructive: 0 62% 50%; /* Red destructive */
+    --destructive-foreground: 0 0% 98%; /* Light destructive text */
+    --input: 0 0% 8%; /* Dark input */
+    --ring: 0 0% 98%; /* Light ring */
+  }
+}
+
+@layer utilities {
+  .font-primary { font-family: var(--font-primary); }
+  .font-secondary { font-family: var(--font-secondary); }
+
+  .min-h-touch-min{min-height:44px}
+.min-h-touch-target{min-height:56px}
+
+  /* Focus Ring System */
+  :root:has(body.user-keys) { --focus-ring: var(--ring); } /* show only when keyboard used */
+  
+  .focus-visible-outline:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+
+  /* Scrollbar hiding */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Typography Patterns:
+ * H1, H2, H3: font-primary (serif) - Major headings
+ * H4, H5, H6: font-secondary (sans-serif) - Minor headings  
+ * Client names: font-secondary font-bold (special rule)
+ * Body text: font-secondary (sans-serif)
+ */

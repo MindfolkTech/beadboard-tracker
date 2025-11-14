@@ -14,48 +14,93 @@ export default {
     },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        // Core brand colors
+        'jovial-jade': 'hsl(var(--jovial-jade))',
+        'garden-green': 'hsl(var(--garden-green))',
+        'elated-emerald': 'hsl(var(--elated-emerald))',
+        
+        // Surface & background
+        'warm-white': 'hsl(var(--warm-white))',
+        'surface': 'hsl(var(--surface))',
+        'surface-accent': 'hsl(var(--surface-accent))',
+        
+        // Text & border
+        'text-primary': 'hsl(var(--text-primary))',
+        'text-secondary': 'hsl(var(--text-secondary))',
+        'text-muted': 'hsl(var(--text-muted))',
+        'ink-slate': 'hsl(var(--ink-slate))',
+        'on-dark': 'hsl(var(--on-dark))',
+        'text-black': 'hsl(var(--text-black))',
+        'border': 'hsl(var(--border))',
+        
+        // Button colors
+        'btn-primary': {
+          DEFAULT: 'hsl(var(--btn-primary-bg))',
+          foreground: 'hsl(var(--btn-primary-text))',
+        },
+        'btn-secondary': {
+          DEFAULT: 'hsl(var(--btn-secondary-bg))',
+          foreground: 'hsl(var(--btn-secondary-text))',
+        },
+        'btn-accent': {
+          DEFAULT: 'hsl(var(--btn-accent-bg))',
+          foreground: 'hsl(var(--btn-accent-text))',
+        },
+        
+        // Tag system
+        'tag-personality': {
+          DEFAULT: 'hsl(var(--tag-personality-bg))',
+          foreground: 'hsl(var(--tag-personality-text))',
+        },
+        'tag-modality': {
+          DEFAULT: 'hsl(var(--tag-modality-bg))',
+          foreground: 'hsl(var(--tag-modality-text))',
+        },
+        'tag-specialty': {
+          DEFAULT: 'hsl(var(--tag-specialty-bg))',
+          foreground: 'hsl(var(--tag-specialty-text))',
+        },
+        'tag-language': {
+          DEFAULT: 'hsl(var(--tag-language-bg))',
+          foreground: 'hsl(var(--tag-language-text))',
+        },
+        
+        // System messages
+        'success': {
+          DEFAULT: 'hsl(var(--success-bg))',
+          foreground: 'hsl(var(--success-text))',
+        },
+        'warning': {
+          DEFAULT: 'hsl(var(--warning-bg))',
+          foreground: 'hsl(var(--warning-text))',
+        },
+        'error': {
+          DEFAULT: 'hsl(var(--error-bg))',
+          foreground: 'hsl(var(--error-text))',
+        },
+        'info': {
+          DEFAULT: 'hsl(var(--info-bg))',
+          foreground: 'hsl(var(--info-text))',
+        },
+        
+        // Legacy mappings for shadcn compatibility
+        background: "hsl(var(--warm-white))",
+        foreground: "hsl(var(--text-primary))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsl(var(--jovial-jade))",
+          foreground: "hsl(var(--on-dark))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "hsl(var(--surface-accent))",
+          foreground: "hsl(var(--text-primary))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "hsl(var(--surface-accent))",
+          foreground: "hsl(var(--text-muted))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+          DEFAULT: "hsl(var(--garden-green))",
+          foreground: "hsl(var(--on-dark))",
         },
       },
       borderRadius: {
