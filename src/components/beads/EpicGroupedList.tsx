@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Issue } from '@/types/Beads.types';
 import { IssueRow } from './IssueRow';
-import { getEpics, getChildren, getIssuesWithoutParent } from '@/services/beads/beadsUtils.service';
+import { getEpics, getChildren, getIssuesWithoutParent } from '@/services/beads/BeadsUtils.service';
 import { ChevronDown, ChevronRight, Folder } from '@/lib/icons';
 import { Progress } from '@/components/ui/progress';
 
