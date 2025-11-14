@@ -49,12 +49,12 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate }: CreateIssueD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-surface border-border">
+      <DialogContent className="bg-surface border-border max-w-full h-screen w-screen m-0 rounded-none flex flex-col">
         <DialogHeader>
           <DialogTitle className="text-text-primary">Create New Issue</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 flex-1 overflow-y-auto">
           <div className="space-y-2">
             <Label htmlFor="title" className="text-text-secondary">Title</Label>
             <Input
