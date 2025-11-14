@@ -1,0 +1,25 @@
+// Centralized icon exports for better tree-shaking
+export {
+  Plus,
+  Search,
+  Zap,
+  List,
+  LayoutGrid,
+  ChevronDown,
+  FileText,
+  Bug,
+  Sparkles,
+  Package,
+  X,
+  CheckCircle2,
+  Play,
+  Trash2,
+  Link2,
+  Circle,
+  Clock,
+  AlertCircle,
+  CheckCircle,
+  CheckSquare,
+  Folder,
+  ChevronRight
+} from 'lucide-react';

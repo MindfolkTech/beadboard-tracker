@@ -1,4 +1,4 @@
-import { X, Zap } from 'lucide-react';
+import { X, Zap } from '@/lib/icons';
 import { useState } from 'react';
 
 export function WelcomeBanner() {

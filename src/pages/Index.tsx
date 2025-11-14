@@ -1,17 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useBeads } from '@/hooks/beads/useBeads';
 import { KanbanBoard } from '@/components/beads/KanbanBoard';
 import { EpicGroupedList } from '@/components/beads/EpicGroupedList';
-import { IssueDetail } from '@/components/beads/IssueDetail';
-import { CreateIssueDialog } from '@/components/beads/CreateIssueDialog';
 import { WelcomeBanner } from '@/components/beads/WelcomeBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Plus, Search, Zap, List, LayoutGrid, ChevronDown, FileText, Bug, Sparkles, Package } from 'lucide-react';
+import { Plus, Search, Zap, List, LayoutGrid, ChevronDown, FileText, Bug, Sparkles, Package } from '@/lib/icons';
 import type { Issue, IssueType, Priority } from '@/types/Beads.types';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
+
+// Lazy load heavy components
+const IssueDetail = lazy(() => import('@/components/beads/IssueDetail').then(m => ({ default: m.IssueDetail })));
+const CreateIssueDialog = lazy(() => import('@/components/beads/CreateIssueDialog').then(m => ({ default: m.CreateIssueDialog })));
 type ViewType = 'list' | 'board';
 const Index = () => {
   const {
@@ -218,15 +220,19 @@ const Index = () => {
 
         {/* Detail Panel */}
         {selectedIssue && <div className="w-[480px] border-l border-border">
-            <IssueDetail issue={selectedIssue} allIssues={issues} onClose={() => setSelectedIssue(null)} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} onNavigate={setSelectedIssue} onAssignParent={handleAssignParent} onRemoveParent={handleRemoveParent} />
+            <Suspense fallback={<div className="w-full h-full bg-surface animate-pulse" />}>
+              <IssueDetail issue={selectedIssue} allIssues={issues} onClose={() => setSelectedIssue(null)} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} onNavigate={setSelectedIssue} onAssignParent={handleAssignParent} onRemoveParent={handleRemoveParent} />
+            </Suspense>
           </div>}
       </div>
 
       {/* Create Dialog */}
-      <CreateIssueDialog open={createDialogConfig.open} onOpenChange={open => setCreateDialogConfig({
-      open,
-      defaultType: undefined
-    })} onCreate={handleCreateIssue} allIssues={issues} defaultType={createDialogConfig.defaultType} />
+      <Suspense fallback={null}>
+        <CreateIssueDialog open={createDialogConfig.open} onOpenChange={open => setCreateDialogConfig({
+        open,
+        defaultType: undefined
+      })} onCreate={handleCreateIssue} allIssues={issues} defaultType={createDialogConfig.defaultType} />
+      </Suspense>
     </div>;
 };
 export default Index;
