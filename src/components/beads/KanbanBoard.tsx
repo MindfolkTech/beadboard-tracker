@@ -87,7 +87,7 @@ export function KanbanBoard({
         </div>
 
         {/* Horizontal Scrollable Content */}
-        <div className="flex gap-3 p-3 bg-[hsl(var(--surface-accent))] rounded-b-lg overflow-x-auto">
+        <div className={cn('flex gap-3 p-3 rounded-b-lg overflow-x-auto', doneColumn.bgColor)}>
           {doneColumn.issues.length === 0 ? <div className="flex items-center justify-center w-full h-32 text-text-muted text-sm">
               No completed issues
             </div> : doneColumn.issues.map(issue => <div key={issue.id} className="w-[280px] shrink-0">
