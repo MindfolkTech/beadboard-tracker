@@ -1,9 +1,16 @@
-// Beads API Client - Connects to bridge server
+// Beads API Service - Connects to bridge server
 import type { Issue, CreateIssueInput, UpdateIssueInput, Dependency } from '@/types/Beads.types';
 
 const API_URL = import.meta.env.VITE_BEADS_API_URL || 'http://localhost:3001/api';
 
-class BeadsApiClient {
+/**
+ * Beads API Service
+ * Provides methods to interact with the bd CLI via bridge server
+ */
+export const beadsApiService = {
+  /**
+   * List all issues with optional filters
+   */
   async listIssues(filters?: {
     status?: string;
     priority?: number;
@@ -22,8 +29,11 @@ class BeadsApiClient {
     }
     
     return response.json();
-  }
+  },
 
+  /**
+   * Get a single issue by ID
+   */
   async getIssue(id: string): Promise<Issue> {
     const response = await fetch(`${API_URL}/issues/${id}`);
     
@@ -32,8 +42,11 @@ class BeadsApiClient {
     }
     
     return response.json();
-  }
+  },
 
+  /**
+   * Create a new issue
+   */
   async createIssue(input: CreateIssueInput): Promise<Issue> {
     const response = await fetch(`${API_URL}/issues`, {
       method: 'POST',
@@ -46,8 +59,11 @@ class BeadsApiClient {
     }
     
     return response.json();
-  }
+  },
 
+  /**
+   * Update an existing issue
+   */
   async updateIssue(id: string, updates: UpdateIssueInput): Promise<Issue> {
     const response = await fetch(`${API_URL}/issues/${id}`, {
       method: 'PATCH',
@@ -60,8 +76,11 @@ class BeadsApiClient {
     }
     
     return response.json();
-  }
+  },
 
+  /**
+   * Delete an issue
+   */
   async deleteIssue(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/issues/${id}`, {
       method: 'DELETE',
@@ -70,8 +89,11 @@ class BeadsApiClient {
     if (!response.ok) {
       throw new Error(`Failed to delete issue: ${response.statusText}`);
     }
-  }
+  },
 
+  /**
+   * Add a dependency to an issue
+   */
   async addDependency(issueId: string, dependency: Dependency): Promise<void> {
     const response = await fetch(`${API_URL}/issues/${issueId}/dependencies`, {
       method: 'POST',
@@ -82,8 +104,11 @@ class BeadsApiClient {
     if (!response.ok) {
       throw new Error(`Failed to add dependency: ${response.statusText}`);
     }
-  }
+  },
 
+  /**
+   * Remove a dependency from an issue
+   */
   async removeDependency(issueId: string, targetId: string): Promise<void> {
     const response = await fetch(`${API_URL}/issues/${issueId}/dependencies/${targetId}`, {
       method: 'DELETE',
@@ -92,8 +117,11 @@ class BeadsApiClient {
     if (!response.ok) {
       throw new Error(`Failed to remove dependency: ${response.statusText}`);
     }
-  }
+  },
 
+  /**
+   * Get all ready issues (open with no blockers)
+   */
   async getReadyIssues(): Promise<Issue[]> {
     const response = await fetch(`${API_URL}/ready`);
     
@@ -102,8 +130,11 @@ class BeadsApiClient {
     }
     
     return response.json();
-  }
+  },
 
+  /**
+   * Check bridge server health
+   */
   async checkHealth(): Promise<{ status: string }> {
     try {
       const response = await fetch(`${API_URL.replace('/api', '')}/health`);
@@ -111,7 +142,5 @@ class BeadsApiClient {
     } catch (error) {
       throw new Error('Cannot connect to beads bridge server. Make sure it\'s running.');
     }
-  }
-}
-
-export const beadsApiService = new BeadsApiClient();
+  },
+};

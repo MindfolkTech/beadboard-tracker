@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { Issue, CreateIssueInput, UpdateIssueInput, IssueStatus, Dependency } from '@/types/Beads.types';
-import { beadsApiService } from '@/services/beads/beadsApi.service';
-import { isIssueReady, sortIssues } from '@/services/beads/beadsUtils.service';
+import { beadsApiService } from '@/services/beads/BeadsApi.service';
+import { isIssueReady, sortIssues } from '@/services/beads/BeadsUtils.service';
 import { toast } from 'sonner';
 
 interface UseBeadsReturn {

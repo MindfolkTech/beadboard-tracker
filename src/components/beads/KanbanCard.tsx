@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { AlertCircle, Bug, Zap, CheckSquare, Folder } from '@/lib/icons';
-import { getBlockers } from '@/services/beads/beadsUtils.service';
+import { getBlockers } from '@/services/beads/BeadsUtils.service';
 
 interface KanbanCardProps {
   issue: Issue;
