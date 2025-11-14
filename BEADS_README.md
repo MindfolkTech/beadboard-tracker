@@ -104,6 +104,33 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
    }
    ```
 
+## How It Works
+
+### Architecture Overview
+
+Beads operates in two modes that share the same SQLite database in `.beads/`:
+
+**Web UI Mode (For Humans)**
+- Requires **both servers running**: Vite dev server (port 5173) and Bridge server (port 3001)
+- Bridge server wraps `bd` CLI commands and exposes them as REST APIs
+- All operations are **manual** - users click buttons to save (no auto-save on field changes)
+- Data flow: UI → useBeads hook → API client → Bridge server → `bd` CLI → SQLite → Response → Full refresh → UI update
+- Expected lag: ~100-400ms per operation due to network round-trips and full issue list refresh
+- **No real-time sync**: UI does not automatically reflect CLI changes until page refresh or manual action
+
+**CLI Mode (For AI Agents)**
+- Requires **no servers** - works directly with SQLite database
+- Changes save **immediately** on each `bd` command execution
+- Data flow: `bd` CLI → Direct SQLite update in `.beads/`
+- Fast operations: ~10-100ms
+- Changes are **not visible** in the web UI until the UI is manually refreshed
+
+### Important Limitations
+
+- **One-way visibility**: CLI changes don't trigger UI updates automatically
+- **No optimistic updates**: UI waits for full server confirmation before displaying changes
+- **Full refresh on every operation**: All UI actions re-fetch the entire issue list, which may be slow with large datasets
+
 ## Usage
 
 ### Creating Issues
