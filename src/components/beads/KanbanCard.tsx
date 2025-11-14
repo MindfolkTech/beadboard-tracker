@@ -25,10 +25,10 @@ export function KanbanCard({ issue, allIssues, isSelected, onClick, showBlockerI
   };
 
   const typeColor = {
-    bug: 'bg-red-500/10 text-red-700 dark:text-red-400',
-    feature: 'bg-blue-500/10 text-blue-700 dark:text-blue-400',
-    task: 'bg-green-500/10 text-green-700 dark:text-green-400',
-    epic: 'bg-purple-500/10 text-purple-700 dark:text-purple-400',
+    bug: 'bg-type-bug-bg text-type-bug',
+    feature: 'bg-type-feature-bg text-type-feature',
+    task: 'bg-type-task-bg text-type-task',
+    epic: 'bg-type-epic-bg text-type-epic',
   };
 
   const priorityColor = {

@@ -65,6 +65,29 @@ export default {
           foreground: 'hsl(var(--tag-language-text))',
         },
         
+        // Status colors
+        'status-blocked': 'hsl(var(--status-blocked))',
+        'status-blocked-bg': 'hsl(var(--status-blocked-bg))',
+        'status-ready': 'hsl(var(--status-ready))',
+        'status-ready-bg': 'hsl(var(--status-ready-bg))',
+        'status-in-progress': 'hsl(var(--status-in-progress))',
+        'status-in-progress-bg': 'hsl(var(--status-in-progress-bg))',
+        'status-closed': 'hsl(var(--status-closed))',
+        'status-closed-bg': 'hsl(var(--status-closed-bg))',
+        
+        // Issue type colors
+        'type-bug': 'hsl(var(--type-bug))',
+        'type-bug-bg': 'hsl(var(--type-bug-bg))',
+        'type-feature': 'hsl(var(--type-feature))',
+        'type-feature-bg': 'hsl(var(--type-feature-bg))',
+        'type-task': 'hsl(var(--type-task))',
+        'type-task-bg': 'hsl(var(--type-task-bg))',
+        'type-epic': 'hsl(var(--type-epic))',
+        'type-epic-bg': 'hsl(var(--type-epic-bg))',
+        
+        // Overlay
+        'modal-backdrop': 'hsl(var(--modal-backdrop))',
+        
         // System messages
         'success': {
           DEFAULT: 'hsl(var(--success-bg))',
