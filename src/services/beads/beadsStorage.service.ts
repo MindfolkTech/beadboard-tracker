@@ -12,7 +12,7 @@ export const storage = {
     }
   },
 
-  saveIssues: async (issues: Issue[]): Promise<void> => {
+  saveIssues: async (): Promise<void> => {
     // Not used with API - individual operations handled by API client
     console.warn('saveIssues called but not implemented for API storage');
   },

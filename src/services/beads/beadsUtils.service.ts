@@ -1,5 +1,5 @@
 // Beads Utilities
-import type { Issue, Dependency } from '@/types/Beads.types';
+import type { Issue } from '@/types/Beads.types';
 
 // Generate hash-based ID like bd-a1b2
 export function generateIssueId(): string {
