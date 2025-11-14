@@ -68,7 +68,7 @@ export function KanbanBoard({
             <div className="flex-1 space-y-3 p-2 bg-[hsl(var(--surface))] rounded-b-lg overflow-y-auto">
               {column.issues.length === 0 ? <div className="flex items-center justify-center h-32 text-text-muted text-sm">
                   No issues
-                </div> : column.issues.map(issue => <KanbanCard key={issue.id} issue={issue} allIssues={issues} isSelected={selectedIssueId === issue.id} onClick={() => onSelectIssue(issue)} showBlockerInfo={column.showBlockerInfo} />)}
+                </div> : column.issues.map(issue => <KanbanCard key={issue.id} issue={issue} allIssues={issues} isSelected={selectedIssueId === issue.id} onClick={() => onSelectIssue(issue)} showBlockerInfo={column.showBlockerInfo} bgColor={column.bgColor} />)}
             </div>
           </div>)}
       </div>
@@ -91,7 +91,7 @@ export function KanbanBoard({
           {doneColumn.issues.length === 0 ? <div className="flex items-center justify-center w-full h-32 text-text-muted text-sm">
               No completed issues
             </div> : doneColumn.issues.map(issue => <div key={issue.id} className="w-[280px] shrink-0">
-                <KanbanCard issue={issue} allIssues={issues} isSelected={selectedIssueId === issue.id} onClick={() => onSelectIssue(issue)} showBlockerInfo={false} />
+                <KanbanCard issue={issue} allIssues={issues} isSelected={selectedIssueId === issue.id} onClick={() => onSelectIssue(issue)} showBlockerInfo={false} bgColor={doneColumn.bgColor} />
               </div>)}
         </div>
       </div>
