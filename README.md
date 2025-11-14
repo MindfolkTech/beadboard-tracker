@@ -41,80 +41,139 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
 
 ### Prerequisites
 
-1. **Install the beads CLI:**
+# 1. Beads CLI (required - check if you already have this using bd --version # Should return version info)
 
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
-   ```
+curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
 
-2. **Initialize beads in your project:**
-   ```bash
-   bd init
-   ```
+# 2. Node.js 18+ (required - check if you already have this)
 
-### Running the System
+node --version # Should be v18.11.0 or higher
 
-1. **Start the bridge server (connects web UI to CLI):**
+# 3. npm (required- check if you already have this)
 
-   ```bash
-   cd server
-   npm install
-   npm start
-   ```
+npm --version # Any recent version
 
-2. **Start the web UI (in another terminal):**
+### Step-by-Step Integration
 
-   ```bash
-   npm install
-   npm run dev
-   ```
+# 1. Copy Beads-Specific Files
 
-3. **Open the interface:**
-   - Web UI: http://localhost:5173
-   - Bridge Server: http://localhost:3001
+Copy the entire folders to your project:
 
-### Embedding in Your Project
+# From Beads project root
 
-1. **Install beads CLI in your project:**
+cp -r server/ /path/to/your-project/
+cp -r src/components/beads/ /path/to/your-project/src/components/
+cp -r src/hooks/beads/ /path/to/your-project/src/hooks/
+cp -r src/services/beads/ /path/to/your-project/src/services/
+cp src/types/Beads.types.ts /path/to/your-project/src/types/
+cp src/design-tokens.css /path/to/your-project/src/
 
-   ```bash
-   curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
-   bd init
-   ```
+# 2. Check for Existing Shadcn Components
 
-2. **Copy the web UI files to your project:**
+If you already have src/components/ui/, verify these components exist:
 
-   ```
-   server/                    # Bridge server
-   src/lib/beads/             # API client and types
-   src/hooks/use-beads.ts     # React hook
-   src/components/beads/      # UI components
-   ```
+button, dialog, dropdown-menu, select, badge, card, progress, separator, input, textarea, label, form, toast, tooltip, alert
+If missing, copy them from the Beads project.
 
-3. **Install dependencies:**
+# 3. Merge Configuration Files
 
-   ```bash
-   npm install lucide-react sonner
-   cd server && npm install
-   ```
+Update your existing config files:
 
-4. **Start the bridge server:**
+.env - Add API URL: VITE_BEADS_API_URL=http://localhost:3001/api
 
-   ```bash
-   cd server && npm start
-   ```
+Verify tsconfig.json path alias exists:
 
-5. **Import and use in your app:**
+{
+"compilerOptions": {
+"paths": {
+"@/_": ["./src/_"]
+}
+}
+}
 
-   ```tsx
-   import { useBeads } from '@/hooks/use-beads';
-   import { IssueList } from '@/components/beads/IssueList';
+# 4. Install Dependencies if not already installed:
 
-   function MyApp() {
-     const { issues, createIssue } = useBeads();
-     return <IssueList issues={issues} />;
-   }
-   ```
+# Root project
+
+npm install lucide-react sonner react-hook-form @hookform/resolvers zod
+
+# Bridge server
+
+cd server
+npm install
+
+# 5. Start the Bridge Server
+
+cd server
+npm start
+
+The server should start on http://localhost:3001.
+
+# 6. Integrate into Your App
+
+Full Page Example (e.g., src/pages/Issues.tsx):
+
+import { useState } from 'react';
+import { useBeads } from '@/hooks/beads/useBeads';
+import { KanbanBoard } from '@/components/beads/KanbanBoard';
+import { EpicGroupedList } from '@/components/beads/EpicGroupedList';
+import { IssueDetail } from '@/components/beads/IssueDetail';
+import { CreateIssueDialog } from '@/components/beads/CreateIssueDialog';
+import { WelcomeBanner } from '@/components/beads/WelcomeBanner';
+import type { Issue } from '@/types/Beads.types';
+
+export function IssuesPage() {
+const {
+issues,
+loading,
+createIssue,
+updateIssue,
+deleteIssue
+} = useBeads();
+
+const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
+const [view, setView] = useState<'board' | 'list'>('board');
+
+if (loading) return <div>Loading issues...</div>;
+
+return (
+<div className="flex h-screen">
+<div className="flex-1">
+{issues.length === 0 ? (
+<WelcomeBanner onCreateIssue={() => {/_ open dialog _/}} />
+) : view === 'board' ? (
+<KanbanBoard 
+            issues={issues} 
+            onIssueClick={setSelectedIssue}
+          />
+) : (
+<EpicGroupedList 
+            issues={issues} 
+            onIssueClick={setSelectedIssue}
+          />
+)}
+</div>
+
+      {selectedIssue && (
+        <IssueDetail
+          issue={selectedIssue}
+          allIssues={issues}
+          onClose={() => setSelectedIssue(null)}
+          onUpdate={updateIssue}
+          onDelete={deleteIssue}
+        />
+      )}
+
+      <CreateIssueDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        onCreate={createIssue}
+        existingIssues={issues}
+      />
+    </div>
+
+);
+}
 
 ## How It Works
 
