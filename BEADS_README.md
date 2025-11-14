@@ -13,7 +13,7 @@ A lightweight, embeddable issue tracking system with a beautiful Linear-inspired
 
 ✨ **Core Functionality**
 - Hash-based issue IDs (bd-a1b2, bd-c3d4, etc.) to prevent collisions
-- Four issue states: Open, In Progress, Done
+- Four issue statuses: Open, In Progress, Blocked, Closed
 - Priority levels (P0-P4) and issue types (Bug, Feature, Task, Epic)
 - Title and description editing for all issues
 - Dependency tracking (blocks, parent/child, related, discovered-from)
@@ -176,8 +176,7 @@ Beads operates in two modes that share the same SQLite database in `.beads/`:
 ### View Modes
 
 **Board View (Kanban):**
-- Visual columns for Open, In Progress, and Done statuses
-- Drag-and-drop cards between columns
+- Visual columns for Blocked, Ready, In Progress, and Closed statuses
 - Compact card view with key information
 - Ideal for workflow visualization
 
@@ -194,7 +193,7 @@ Beads operates in two modes that share the same SQLite database in `.beads/`:
 - **Backlog** - Open issues waiting to be started
 - **Active** - Issues currently in progress
 - **Ready** - Issues with no blockers, ready to work on
-- **Done** - Completed issues
+- **Closed** - Completed issues
 
 ### Issue Details
 
@@ -235,14 +234,16 @@ bd create "Fix authentication bug" -t bug -p 1 -d "Users can't login"
 # Create an epic for grouping work
 bd create "User Authentication Epic" -t epic -p 1 -d "Complete auth overhaul"
 
-# Claim an issue
-bd assign bd-a1b2 "AI Agent Name"
+# Assign an issue
+bd update bd-a1b2 --assignee "AI Agent Name" --json
 
 # Start working on an issue
-bd update bd-a1b2 --status in_progress
+bd update bd-a1b2 --status in_progress --json
 
-# Mark issue as done
-bd update bd-a1b2 --status done
+# Mark issue as closed (completed)
+bd close bd-a1b2 --reason "Completed" --json
+# OR
+bd update bd-a1b2 --status closed --json
 
 # Update title and description
 bd update bd-a1b2 --title "New title" -d "Updated description"
@@ -283,12 +284,12 @@ Issues are stored in `.beads/beads.db` (SQLite) and synced via git as JSONL. The
   id: string;              // bd-a1b2
   title: string;
   description?: string;
-  status: 'open' | 'in_progress' | 'done';
+  status: 'open' | 'in_progress' | 'blocked' | 'closed';
   type: 'bug' | 'feature' | 'task' | 'epic';
   priority: 0 | 1 | 2 | 3 | 4; // 0 is highest (P0-P4)
   assignee?: string;
   dependencies: Dependency[];
-  tags?: string[];
+  labels?: string[];
   createdAt: number;
   updatedAt: number;
   closedAt?: number;
