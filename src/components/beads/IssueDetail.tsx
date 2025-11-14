@@ -3,7 +3,7 @@ import type { Issue } from '@/types/Beads.types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { X, CheckCircle2, Play, Trash2, Link2 } from 'lucide-react';
+import { X, CheckCircle2, Play, Trash2, Link2 } from '@/lib/icons';
 import { getBlockers, getBlocked, getChildren, getParent } from '@/services/beads/beadsUtils.service';
 import { DependencySection } from './DependencySection';
 import { IssueDetailParentSelector } from './IssueDetailParentSelector';

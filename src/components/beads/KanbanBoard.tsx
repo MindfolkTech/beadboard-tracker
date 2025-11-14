@@ -2,7 +2,7 @@ import type { Issue } from '@/types/Beads.types';
 import { KanbanCard } from './KanbanCard';
 import { getBlockedIssues, getReadyIssuesLocal } from '@/services/beads/beadsUtils.service';
 import { cn } from '@/lib/utils';
-import { AlertCircle, CheckCircle, Clock, CheckSquare } from 'lucide-react';
+import { AlertCircle, CheckCircle, Clock, CheckSquare } from '@/lib/icons';
 interface KanbanBoardProps {
   issues: Issue[];
   onSelectIssue: (issue: Issue) => void;
