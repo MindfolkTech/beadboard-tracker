@@ -7,8 +7,9 @@ import { CreateIssueDialog } from '@/components/beads/CreateIssueDialog';
 import { WelcomeBanner } from '@/components/beads/WelcomeBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Search, Zap, List, LayoutGrid } from 'lucide-react';
-import { Issue } from '@/lib/beads/types';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Plus, Search, Zap, List, LayoutGrid, ChevronDown, FileText, Bug, Sparkles, Package } from 'lucide-react';
+import { Issue, IssueType, Priority } from '@/lib/beads/types';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 
@@ -22,13 +23,18 @@ const Index = () => {
     updateIssue,
     closeIssue,
     deleteIssue,
+    addDependency,
+    removeDependency,
     getReadyIssues,
     getIssuesByStatus,
   } = useBeads();
 
   const [activeView, setActiveView] = useState<ViewType>('board');
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [createDialogConfig, setCreateDialogConfig] = useState<{
+    open: boolean;
+    defaultType?: IssueType;
+  }>({ open: false });
   const [searchQuery, setSearchQuery] = useState('');
 
   // Get filtered issues based on search
@@ -54,7 +60,7 @@ const Index = () => {
       // Cmd/Ctrl + K to create issue
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setCreateDialogOpen(true);
+        setCreateDialogConfig({ open: true });
       }
 
       // Escape to close detail panel
@@ -67,9 +73,50 @@ const Index = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleCreateIssue = async (data: Parameters<typeof createIssue>[0]) => {
-    const newIssue = await createIssue(data);
+  const openCreateDialog = (defaultType?: IssueType) => {
+    setCreateDialogConfig({ open: true, defaultType });
+  };
+
+  const handleCreateIssue = async (data: {
+    title: string;
+    description?: string;
+    type: IssueType;
+    priority: Priority;
+    assignee?: string;
+    parentId?: string;
+  }) => {
+    const { parentId, ...issueData } = data;
+    const newIssue = await createIssue(issueData);
+    
+    // If parent selected, add dependency
+    if (parentId) {
+      await addDependency(newIssue.id, { type: 'parent', targetId: parentId });
+    }
+    
     setSelectedIssue(newIssue);
+    setCreateDialogConfig({ open: false });
+  };
+
+  const handleAssignParent = async (issueId: string, parentId: string) => {
+    try {
+      await addDependency(issueId, { type: 'parent', targetId: parentId });
+      toast.success('Parent assigned');
+      
+      // Refresh selected issue
+      const updated = issues.find(i => i.id === issueId);
+      if (updated) setSelectedIssue(updated);
+    } catch (error) {
+      toast.error('Failed to assign parent');
+    }
+  };
+
+  const handleRemoveParent = async (issueId: string, parentId: string) => {
+    try {
+      await removeDependency(issueId, parentId);
+      toast.success('Parent removed');
+    } catch (error) {
+      toast.error('Failed to remove parent');
+    }
   };
 
   const handleUpdateStatus = (id: string, status: Issue['status']) => {
@@ -124,14 +171,35 @@ const Index = () => {
                   className="pl-9 w-64 bg-warm-white border-border"
                 />
               </div>
-              <Button
-                onClick={() => setCreateDialogOpen(true)}
-                className="bg-btn-primary text-btn-primary-foreground hover:opacity-90"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                New Issue
-                <kbd className="ml-2 text-xs opacity-70">⌘K</kbd>
-              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className="bg-btn-primary text-btn-primary-foreground hover:opacity-90">
+                    <Plus className="h-4 w-4 mr-2" />
+                    New Issue
+                    <ChevronDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-background border-border">
+                  <DropdownMenuItem onClick={() => openCreateDialog('task')}>
+                    <FileText className="mr-2 h-4 w-4" />
+                    New Task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => openCreateDialog('feature')}>
+                    <Sparkles className="mr-2 h-4 w-4" />
+                    New Feature
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => openCreateDialog('bug')}>
+                    <Bug className="mr-2 h-4 w-4" />
+                    New Bug
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => openCreateDialog('epic')}>
+                    <Package className="mr-2 h-4 w-4" />
+                    New Epic
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -191,6 +259,8 @@ const Index = () => {
               onUpdateStatus={handleUpdateStatus}
               onDelete={handleDelete}
               onNavigate={setSelectedIssue}
+              onAssignParent={handleAssignParent}
+              onRemoveParent={handleRemoveParent}
             />
           </div>
         )}
@@ -198,9 +268,11 @@ const Index = () => {
 
       {/* Create Dialog */}
       <CreateIssueDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
+        open={createDialogConfig.open}
+        onOpenChange={(open) => setCreateDialogConfig({ open, defaultType: undefined })}
         onCreate={handleCreateIssue}
+        allIssues={issues}
+        defaultType={createDialogConfig.defaultType}
       />
     </div>
   );

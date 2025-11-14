@@ -84,6 +84,16 @@ class BeadsApiClient {
     }
   }
 
+  async removeDependency(issueId: string, targetId: string): Promise<void> {
+    const response = await fetch(`${API_URL}/issues/${issueId}/dependencies/${targetId}`, {
+      method: 'DELETE',
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to remove dependency: ${response.statusText}`);
+    }
+  }
+
   async getReadyIssues(): Promise<Issue[]> {
     const response = await fetch(`${API_URL}/ready`);
     

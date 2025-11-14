@@ -140,23 +140,25 @@ app.delete('/api/issues/:id', async (req, res) => {
 app.post('/api/issues/:id/dependencies', async (req, res) => {
   try {
     const { type, targetId } = req.body;
-    const args = ['link', req.params.id];
+    const args = ['dep', 'add', req.params.id, targetId];
     
-    switch (type) {
-      case 'blocks':
-        args.push('--blocks', targetId);
-        break;
-      case 'parent':
-        args.push('--parent', targetId);
-        break;
-      case 'related':
-        args.push('--related', targetId);
-        break;
-      default:
-        throw new Error(`Unknown dependency type: ${type}`);
+    // Add type flag if not the default 'blocks'
+    if (type && type !== 'blocks') {
+      args.push('--type', type);
     }
     
     await executeBd(args);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Remove dependency
+app.delete('/api/issues/:id/dependencies/:targetId', async (req, res) => {
+  try {
+    const { id, targetId } = req.params;
+    await executeBd(['dep', 'remove', id, targetId]);
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: error.message });

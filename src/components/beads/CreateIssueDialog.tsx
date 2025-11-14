@@ -1,30 +1,41 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { IssueType, Priority } from '@/lib/beads/types';
+import { IssueType, Priority, Issue } from '@/lib/beads/types';
 
 interface CreateIssueDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  allIssues: Issue[];
+  defaultType?: IssueType;
   onCreate: (data: {
     title: string;
     description?: string;
     type: IssueType;
     priority: Priority;
     assignee?: string;
+    parentId?: string;
   }) => void;
 }
 
-export function CreateIssueDialog({ open, onOpenChange, onCreate }: CreateIssueDialogProps) {
+export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, defaultType }: CreateIssueDialogProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [type, setType] = useState<IssueType>('task');
+  const [type, setType] = useState<IssueType>(defaultType || 'task');
   const [priority, setPriority] = useState<Priority>(2);
   const [assignee, setAssignee] = useState('');
+  const [parentId, setParentId] = useState<string>('');
+
+  // Update type when defaultType changes
+  useEffect(() => {
+    if (defaultType) {
+      setType(defaultType);
+    }
+  }, [defaultType]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,14 +47,16 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate }: CreateIssueD
       type,
       priority,
       assignee: assignee.trim() || undefined,
+      parentId: parentId || undefined,
     });
 
     // Reset form
     setTitle('');
     setDescription('');
-    setType('task');
+    setType(defaultType || 'task');
     setPriority(2);
     setAssignee('');
+    setParentId('');
     onOpenChange(false);
   };
 
@@ -119,6 +132,26 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate }: CreateIssueD
               placeholder="Username..."
               className="bg-warm-white border-border"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="parent" className="text-text-secondary">Parent Epic (optional)</Label>
+            <Select value={parentId} onValueChange={setParentId}>
+              <SelectTrigger className="bg-warm-white border-border">
+                <SelectValue placeholder="No parent" />
+              </SelectTrigger>
+              <SelectContent className="bg-background border-border">
+                <SelectItem value="">No parent</SelectItem>
+                {allIssues
+                  .filter(i => i.type === 'epic')
+                  .map(epic => (
+                    <SelectItem key={epic.id} value={epic.id}>
+                      📦 {epic.id} - {epic.title}
+                    </SelectItem>
+                  ))
+                }
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">

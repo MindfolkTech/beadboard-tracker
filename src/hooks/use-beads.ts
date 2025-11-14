@@ -104,10 +104,17 @@ export function useBeads() {
     }
   }, [refreshIssues]);
 
-  // Remove a dependency (not implemented in API yet)
-  const removeDependency = useCallback(async (issueId: string, dependency: Dependency) => {
-    toast.warning('Remove dependency not yet implemented in bd CLI');
-  }, []);
+  // Remove a dependency
+  const removeDependency = useCallback(async (issueId: string, targetId: string) => {
+    try {
+      await apiClient.removeDependency(issueId, targetId);
+      await refreshIssues();
+      toast.success('Dependency removed');
+    } catch (error) {
+      toast.error('Failed to remove dependency');
+      throw error;
+    }
+  }, [refreshIssues]);
 
   // Get ready issues (no open blockers)
   const getReadyIssues = useCallback(async (): Promise<Issue[]> => {
