@@ -1,6 +1,13 @@
 # Beads - Linear-Style Issue Tracker
 
-A lightweight, embeddable issue tracking system designed for AI coding agents, inspired by [steveyegge/beads](https://github.com/steveyegge/beads) and styled after Linear's clean interface.
+A lightweight, embeddable issue tracking system with a beautiful Linear-inspired interface, connected to the original [beads CLI](https://github.com/steveyegge/beads). Built specifically for AI coding agents to track work across long-horizon tasks.
+
+**Key Features:**
+- 🎨 Beautiful Linear-style web UI for humans
+- 🤖 Native CLI support for AI agents (`bd` commands)
+- 🔄 Shared data store - UI and CLI work together
+- 📦 Lightweight and embeddable
+- 🌳 Git-versioned issue tracking
 
 ## Features
 
@@ -26,33 +33,72 @@ A lightweight, embeddable issue tracking system designed for AI coding agents, i
 
 ## Quick Start
 
-### For Development
+### Prerequisites
 
-```bash
-npm install
-npm run dev
-```
-
-### For Embedding
-
-1. Copy the beads system:
-   - `src/lib/beads/` - Core types, storage, and utilities
-   - `src/hooks/use-beads.ts` - React hook for state management
-   - `src/components/beads/` - UI components
-
-2. Install dependencies:
+1. **Install the beads CLI:**
    ```bash
-   npm install lucide-react sonner
+   curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
    ```
 
-3. Import and use:
+2. **Initialize beads in your project:**
+   ```bash
+   bd init
+   ```
+
+### Running the System
+
+1. **Start the bridge server (connects web UI to CLI):**
+   ```bash
+   cd server
+   npm install
+   npm start
+   ```
+
+2. **Start the web UI (in another terminal):**
+   ```bash
+   npm install
+   npm run dev
+   ```
+
+3. **Open the interface:**
+   - Web UI: http://localhost:8080
+   - Bridge Server: http://localhost:3001
+
+### Embedding in Your Project
+
+1. **Install beads CLI in your project:**
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/steveyegge/beads/main/scripts/install.sh | bash
+   bd init
+   ```
+
+2. **Copy the web UI files to your project:**
+   ```
+   server/                    # Bridge server
+   src/lib/beads/             # API client and types
+   src/hooks/use-beads.ts     # React hook
+   src/components/beads/      # UI components
+   ```
+
+3. **Install dependencies:**
+   ```bash
+   npm install lucide-react sonner
+   cd server && npm install
+   ```
+
+4. **Start the bridge server:**
+   ```bash
+   cd server && npm start
+   ```
+
+5. **Import and use in your app:**
    ```tsx
    import { useBeads } from '@/hooks/use-beads';
    import { IssueList } from '@/components/beads/IssueList';
-
+   
    function MyApp() {
-     const { issues, createIssue, updateIssue } = useBeads();
-     // ... your implementation
+     const { issues, createIssue } = useBeads();
+     return <IssueList issues={issues} />;
    }
    ```
 
@@ -94,16 +140,47 @@ The interface uses a sage green color palette with warm whites, following access
 
 ## For AI Agents
 
-This system is designed to be used by AI coding agents. Agents can:
+### Using the CLI Directly
 
-1. **Track discovered work** - Create issues for bugs or improvements found during development
-2. **Manage dependencies** - Link related work and blockers
-3. **Query ready work** - Use `getReadyIssues()` to find unblocked tasks
-4. **Maintain context** - Keep long-term development plans organized
+AI agents should use the `bd` CLI commands directly. The web UI will automatically reflect changes:
+
+```bash
+# List ready work (no blockers)
+bd ready --json
+
+# Create a new issue
+bd create "Fix authentication bug" -t bug -p 1 -d "Users can't login"
+
+# Claim an issue
+bd assign bd-a1b2 "AI Agent Name"
+
+# Start working on an issue
+bd update bd-a1b2 --status in_progress
+
+# Mark issue as done
+bd update bd-a1b2 --status done
+
+# Add a blocker dependency
+bd link bd-a1b2 --blocks bd-c3d4
+
+# Show issue details
+bd show bd-a1b2 --json
+```
+
+### For Humans
+
+Humans use the beautiful Linear-style web interface to:
+- View all issues at a glance
+- Search and filter by status, priority, type
+- See dependency graphs
+- Create and update issues visually
+- Track agent progress
+
+Both the CLI and web UI read/write to the same `.beads/` database, so everyone stays in sync.
 
 ## Data Structure
 
-Issues are stored as JSONL in LocalStorage. Each issue contains:
+Issues are stored in `.beads/beads.db` (SQLite) and synced via git as JSONL. The structure:
 
 ```typescript
 {
@@ -124,16 +201,25 @@ Issues are stored as JSONL in LocalStorage. Each issue contains:
 
 ## Export/Import
 
-To backup or transfer issues:
+### Export Issues (CLI)
 
-```typescript
-// Export
-const issues = storage.getIssues();
-const json = JSON.stringify(issues, null, 2);
-
-// Import
-storage.saveIssues(JSON.parse(json));
+```bash
+bd export issues.json
 ```
+
+### Import Issues (CLI)
+
+```bash
+bd import issues.json
+```
+
+### Backup Data
+
+The `.beads/` directory contains all your data:
+- `beads.db` - SQLite database (local)
+- `*.jsonl` - Git-synced records
+
+Simply commit `.beads/` to git to backup and share with your team.
 
 ## License
 

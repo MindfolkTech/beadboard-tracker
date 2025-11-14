@@ -42,7 +42,7 @@ const Index = () => {
         filtered = getIssuesByStatus('in_progress');
         break;
       case 'ready':
-        filtered = getReadyIssues();
+        filtered = issues.filter(issue => issue.status === 'open');
         break;
       case 'done':
         filtered = getIssuesByStatus('done');
@@ -72,7 +72,7 @@ const Index = () => {
     all: issues.length,
     backlog: getIssuesByStatus('open').length,
     active: getIssuesByStatus('in_progress').length,
-    ready: getReadyIssues().length,
+    ready: getIssuesByStatus('open').length,
     done: getIssuesByStatus('done').length,
   };
 
@@ -95,8 +95,8 @@ const Index = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  const handleCreateIssue = (data: Parameters<typeof createIssue>[0]) => {
-    const newIssue = createIssue(data);
+  const handleCreateIssue = async (data: Parameters<typeof createIssue>[0]) => {
+    const newIssue = await createIssue(data);
     setSelectedIssue(newIssue);
   };
 
