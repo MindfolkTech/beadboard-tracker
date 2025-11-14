@@ -73,7 +73,7 @@ export function EpicGroupedList({ issues, onSelectIssue, selectedIssueId }: Epic
                 )}
               </div>
               
-              <Folder className="h-5 w-5 text-purple-600 dark:text-purple-400 shrink-0" />
+              <Folder className="h-5 w-5 text-type-epic shrink-0" />
               
               <div className="flex-1 min-w-0 text-left">
                 <div className="flex items-center gap-2 mb-1">
@@ -94,7 +94,7 @@ export function EpicGroupedList({ issues, onSelectIssue, selectedIssueId }: Epic
 
             {/* Children */}
             {isExpanded && children.length > 0 && (
-              <div className="pl-12 border-l-2 border-purple-500/20 ml-4">
+              <div className="pl-12 border-l-2 border-type-epic/20 ml-4">
                 {children.map(child => (
                   <IssueRow
                     key={child.id}
