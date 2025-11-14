@@ -1,14 +1,12 @@
 import { useState } from 'react';
-import { Issue } from '@/lib/beads/types';
+import type { Issue } from '@/types/Beads.types';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { X, CheckCircle2, Play, Trash2, Link2 } from 'lucide-react';
-import { getBlockers, getBlocked, getChildren, getParent } from '@/lib/beads/utils';
-import { toast } from 'sonner';
+import { getBlockers, getBlocked, getChildren, getParent } from '@/services/beads/beadsUtils.service';
+import { DependencySection } from './DependencySection';
+import { IssueDetailParentSelector } from './IssueDetailParentSelector';
 
 interface IssueDetailProps {
   issue: Issue;
@@ -32,7 +30,6 @@ export function IssueDetail({
   onRemoveParent,
 }: IssueDetailProps) {
   const [showParentSelector, setShowParentSelector] = useState(false);
-  const [selectedParentId, setSelectedParentId] = useState<string>('');
   
   const blockers = getBlockers(issue, allIssues);
   const blocked = getBlocked(issue.id, allIssues);
@@ -44,25 +41,6 @@ export function IssueDetail({
       onUpdateStatus(issue.id, 'in_progress');
     } else if (issue.status === 'in_progress') {
       onUpdateStatus(issue.id, 'closed');
-    }
-  };
-
-  const handleParentChange = async () => {
-    if (!selectedParentId) return;
-    
-    try {
-      // Remove old parent if exists
-      if (parent) {
-        await onRemoveParent(issue.id, parent.id);
-      }
-      
-      // Add new parent
-      await onAssignParent(issue.id, selectedParentId);
-      setShowParentSelector(false);
-      setSelectedParentId('');
-      toast.success('Parent updated');
-    } catch (error) {
-      toast.error('Failed to update parent');
     }
   };
 
@@ -149,59 +127,9 @@ export function IssueDetail({
           )}
         </div>
 
-        {children.length > 0 && (
-          <div>
-            <Separator className="mb-4" />
-            <h3 className="text-sm font-medium text-text-secondary mb-2">Subtasks</h3>
-            <div className="space-y-2">
-              {children.map(child => (
-                <button
-                  key={child.id}
-                  onClick={() => onNavigate(child)}
-                  className="block text-sm text-garden-green hover:underline"
-                >
-                  {child.id} - {child.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {blockers.length > 0 && (
-          <div>
-            <Separator className="mb-4" />
-            <h3 className="text-sm font-medium text-text-secondary mb-2">Blocked By</h3>
-            <div className="space-y-2">
-              {blockers.map(blocker => (
-                <button
-                  key={blocker.id}
-                  onClick={() => onNavigate(blocker)}
-                  className="block text-sm text-warning-text hover:underline"
-                >
-                  {blocker.id} - {blocker.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {blocked.length > 0 && (
-          <div>
-            <Separator className="mb-4" />
-            <h3 className="text-sm font-medium text-text-secondary mb-2">Blocking</h3>
-            <div className="space-y-2">
-              {blocked.map(b => (
-                <button
-                  key={b.id}
-                  onClick={() => onNavigate(b)}
-                  className="block text-sm text-garden-green hover:underline"
-                >
-                  {b.id} - {b.title}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
+        <DependencySection title="Subtasks" issues={children} onNavigate={onNavigate} />
+        <DependencySection title="Blocked By" issues={blockers} onNavigate={onNavigate} textColorClass="text-warning-text" />
+        <DependencySection title="Blocking" issues={blocked} onNavigate={onNavigate} />
       </div>
 
       {/* Footer Actions */}
@@ -237,57 +165,15 @@ export function IssueDetail({
       </div>
 
       {/* Parent Selector Dialog */}
-      <Dialog open={showParentSelector} onOpenChange={setShowParentSelector}>
-        <DialogContent className="bg-surface border-border">
-          <DialogHeader>
-            <DialogTitle className="text-text-primary">
-              {parent ? 'Change Parent Epic' : 'Assign to Epic'}
-            </DialogTitle>
-          </DialogHeader>
-          
-          {parent && (
-            <Alert className="bg-surface-accent border-border">
-              <AlertDescription className="text-text-secondary">
-                Current parent will be removed before assigning new parent.
-              </AlertDescription>
-            </Alert>
-          )}
-          
-          <div className="space-y-2">
-            <Select
-              value={selectedParentId}
-              onValueChange={setSelectedParentId}
-            >
-              <SelectTrigger className="bg-warm-white border-border">
-                <SelectValue placeholder="Select epic" />
-              </SelectTrigger>
-              <SelectContent className="bg-background border-border">
-                {allIssues
-                  .filter(i => i.type === 'epic' && i.id !== issue.id)
-                  .map(epic => (
-                    <SelectItem key={epic.id} value={epic.id}>
-                      📦 {epic.id} - {epic.title} ({epic.status})
-                    </SelectItem>
-                  ))
-                }
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowParentSelector(false)}>
-              Cancel
-            </Button>
-            <Button 
-              onClick={handleParentChange}
-              disabled={!selectedParentId}
-              className="bg-btn-primary text-btn-primary-foreground"
-            >
-              {parent ? 'Change Parent' : 'Assign'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <IssueDetailParentSelector
+        issue={issue}
+        parent={parent}
+        allIssues={allIssues}
+        open={showParentSelector}
+        onOpenChange={setShowParentSelector}
+        onAssignParent={onAssignParent}
+        onRemoveParent={onRemoveParent}
+      />
     </div>
   );
 }
