@@ -12,9 +12,7 @@ import { Plus, Search, Zap, List, LayoutGrid, ChevronDown, FileText, Bug, Sparkl
 import { Issue, IssueType, Priority } from '@/lib/beads/types';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
-
 type ViewType = 'list' | 'board';
-
 const Index = () => {
   const {
     issues,
@@ -26,15 +24,16 @@ const Index = () => {
     addDependency,
     removeDependency,
     getReadyIssues,
-    getIssuesByStatus,
+    getIssuesByStatus
   } = useBeads();
-
   const [activeView, setActiveView] = useState<ViewType>('board');
   const [selectedIssue, setSelectedIssue] = useState<Issue | null>(null);
   const [createDialogConfig, setCreateDialogConfig] = useState<{
     open: boolean;
     defaultType?: IssueType;
-  }>({ open: false });
+  }>({
+    open: false
+  });
   const [searchQuery, setSearchQuery] = useState('');
 
   // Get filtered issues based on search
@@ -42,16 +41,9 @@ const Index = () => {
     if (!searchQuery.trim()) {
       return issues;
     }
-
     const query = searchQuery.toLowerCase();
-    return issues.filter(
-      issue =>
-        issue.id.toLowerCase().includes(query) ||
-        issue.title.toLowerCase().includes(query) ||
-        issue.description?.toLowerCase().includes(query)
-    );
+    return issues.filter(issue => issue.id.toLowerCase().includes(query) || issue.title.toLowerCase().includes(query) || issue.description?.toLowerCase().includes(query));
   };
-
   const filteredIssues = getFilteredIssues();
 
   // Keyboard shortcuts
@@ -60,7 +52,9 @@ const Index = () => {
       // Cmd/Ctrl + K to create issue
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        setCreateDialogConfig({ open: true });
+        setCreateDialogConfig({
+          open: true
+        });
       }
 
       // Escape to close detail panel
@@ -68,15 +62,15 @@ const Index = () => {
         setSelectedIssue(null);
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
   const openCreateDialog = (defaultType?: IssueType) => {
-    setCreateDialogConfig({ open: true, defaultType });
+    setCreateDialogConfig({
+      open: true,
+      defaultType
+    });
   };
-
   const handleCreateIssue = async (data: {
     title: string;
     description?: string;
@@ -85,23 +79,32 @@ const Index = () => {
     assignee?: string;
     parentId?: string;
   }) => {
-    const { parentId, ...issueData } = data;
+    const {
+      parentId,
+      ...issueData
+    } = data;
     const newIssue = await createIssue(issueData);
-    
+
     // If parent selected, add dependency
     if (parentId) {
-      await addDependency(newIssue.id, { type: 'parent', targetId: parentId });
+      await addDependency(newIssue.id, {
+        type: 'parent',
+        targetId: parentId
+      });
     }
-    
     setSelectedIssue(newIssue);
-    setCreateDialogConfig({ open: false });
+    setCreateDialogConfig({
+      open: false
+    });
   };
-
   const handleAssignParent = async (issueId: string, parentId: string) => {
     try {
-      await addDependency(issueId, { type: 'parent', targetId: parentId });
+      await addDependency(issueId, {
+        type: 'parent',
+        targetId: parentId
+      });
       toast.success('Parent assigned');
-      
+
       // Refresh selected issue
       const updated = issues.find(i => i.id === issueId);
       if (updated) setSelectedIssue(updated);
@@ -109,7 +112,6 @@ const Index = () => {
       toast.error('Failed to assign parent');
     }
   };
-
   const handleRemoveParent = async (issueId: string, parentId: string) => {
     try {
       await removeDependency(issueId, parentId);
@@ -118,34 +120,32 @@ const Index = () => {
       toast.error('Failed to remove parent');
     }
   };
-
   const handleUpdateStatus = (id: string, status: Issue['status']) => {
-    updateIssue(id, { status });
+    updateIssue(id, {
+      status
+    });
     if (status === 'done') {
       closeIssue(id);
     }
     // Refresh selected issue
     const updated = issues.find(i => i.id === id);
     if (updated) {
-      setSelectedIssue({ ...updated, status });
+      setSelectedIssue({
+        ...updated,
+        status
+      });
     }
   };
-
   const handleDelete = (id: string) => {
     deleteIssue(id);
     setSelectedIssue(null);
   };
-
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
+    return <div className="flex items-center justify-center min-h-screen">
         <p className="text-text-muted">Loading...</p>
-      </div>
-    );
+      </div>;
   }
-
-  return (
-    <div className="flex flex-col h-screen bg-warm-white">
+  return <div className="flex flex-col h-screen bg-warm-white">
       <WelcomeBanner />
       
       <div className="flex flex-1 overflow-hidden">
@@ -164,12 +164,7 @@ const Index = () => {
             <div className="flex items-center gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-text-muted" />
-                <Input
-                  placeholder="Search issues..."
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  className="pl-9 w-64 bg-warm-white border-border"
-                />
+                <Input placeholder="Search issues..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 w-64 bg-warm-white border-border" />
               </div>
 
               <DropdownMenu>
@@ -204,28 +199,12 @@ const Index = () => {
           </div>
 
           {/* View Toggle */}
-          <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-[hsl(var(--surface))]">
-            <button
-              onClick={() => setActiveView('list')}
-              className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                activeView === 'list'
-                  ? 'bg-garden-green text-white'
-                  : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]'
-              )}
-            >
+          <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-[hsl(var(--warm-white))]">
+            <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'list' ? 'bg-garden-green text-white' : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]')}>
               <List className="h-4 w-4" />
               All Issues
             </button>
-            <button
-              onClick={() => setActiveView('board')}
-              className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors',
-                activeView === 'board'
-                  ? 'bg-garden-green text-white'
-                  : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]'
-              )}
-            >
+            <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'board' ? 'bg-garden-green text-white' : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]')}>
               <LayoutGrid className="h-4 w-4" />
               Board
             </button>
@@ -233,49 +212,21 @@ const Index = () => {
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
-            {activeView === 'list' ? (
-              <EpicGroupedList
-                issues={filteredIssues}
-                onSelectIssue={setSelectedIssue}
-                selectedIssueId={selectedIssue?.id}
-              />
-            ) : (
-              <KanbanBoard
-                issues={filteredIssues}
-                onSelectIssue={setSelectedIssue}
-                selectedIssueId={selectedIssue?.id}
-              />
-            )}
+            {activeView === 'list' ? <EpicGroupedList issues={filteredIssues} onSelectIssue={setSelectedIssue} selectedIssueId={selectedIssue?.id} /> : <KanbanBoard issues={filteredIssues} onSelectIssue={setSelectedIssue} selectedIssueId={selectedIssue?.id} />}
           </div>
         </div>
 
         {/* Detail Panel */}
-        {selectedIssue && (
-          <div className="w-[480px] border-l border-border">
-            <IssueDetail
-              issue={selectedIssue}
-              allIssues={issues}
-              onClose={() => setSelectedIssue(null)}
-              onUpdateStatus={handleUpdateStatus}
-              onDelete={handleDelete}
-              onNavigate={setSelectedIssue}
-              onAssignParent={handleAssignParent}
-              onRemoveParent={handleRemoveParent}
-            />
-          </div>
-        )}
+        {selectedIssue && <div className="w-[480px] border-l border-border">
+            <IssueDetail issue={selectedIssue} allIssues={issues} onClose={() => setSelectedIssue(null)} onUpdateStatus={handleUpdateStatus} onDelete={handleDelete} onNavigate={setSelectedIssue} onAssignParent={handleAssignParent} onRemoveParent={handleRemoveParent} />
+          </div>}
       </div>
 
       {/* Create Dialog */}
-      <CreateIssueDialog
-        open={createDialogConfig.open}
-        onOpenChange={(open) => setCreateDialogConfig({ open, defaultType: undefined })}
-        onCreate={handleCreateIssue}
-        allIssues={issues}
-        defaultType={createDialogConfig.defaultType}
-      />
-    </div>
-  );
+      <CreateIssueDialog open={createDialogConfig.open} onOpenChange={open => setCreateDialogConfig({
+      open,
+      defaultType: undefined
+    })} onCreate={handleCreateIssue} allIssues={issues} defaultType={createDialogConfig.defaultType} />
+    </div>;
 };
-
 export default Index;
