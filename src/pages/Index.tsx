@@ -199,12 +199,12 @@ const Index = () => {
           </div>
 
           {/* View Toggle */}
-          <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-[hsl(var(--warm-white))]">
-            <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'list' ? 'bg-garden-green text-white' : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]')}>
+          <div className="flex items-center gap-2 px-6 py-3 border-b border-border bg-warm-white">
+            <button onClick={() => setActiveView('list')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'list' ? 'bg-garden-green text-btn-primary-text' : 'text-text-muted hover:text-text-primary hover:bg-surface-accent')}>
               <List className="h-4 w-4" />
               All Issues
             </button>
-            <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'board' ? 'bg-garden-green text-white' : 'text-text-muted hover:text-text-primary hover:bg-[hsl(var(--surface-accent))]')}>
+            <button onClick={() => setActiveView('board')} className={cn('flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors', activeView === 'board' ? 'bg-garden-green text-btn-primary-text' : 'text-text-muted hover:text-text-primary hover:bg-surface-accent')}>
               <LayoutGrid className="h-4 w-4" />
               Board
             </button>

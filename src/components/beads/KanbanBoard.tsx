@@ -21,29 +21,29 @@ export function KanbanBoard({
     title: 'Blocked',
     icon: <AlertCircle className="h-4 w-4" />,
     issues: blockedIssues,
-    color: 'text-red-600 dark:text-red-400',
-    bgColor: 'bg-red-500/5',
+    color: 'text-status-blocked',
+    bgColor: 'bg-status-blocked-bg',
     showBlockerInfo: true
   }, {
     title: 'Ready',
     icon: <CheckCircle className="h-4 w-4" />,
     issues: readyIssues,
-    color: 'text-green-600 dark:text-green-400',
-    bgColor: 'bg-green-500/5',
+    color: 'text-status-ready',
+    bgColor: 'bg-status-ready-bg',
     showBlockerInfo: false
   }, {
     title: 'In Progress',
     icon: <Clock className="h-4 w-4" />,
     issues: inProgressIssues,
-    color: 'text-blue-600 dark:text-blue-400',
-    bgColor: 'bg-blue-500/5',
+    color: 'text-status-in-progress',
+    bgColor: 'bg-status-in-progress-bg',
     showBlockerInfo: false
   }, {
     title: 'Closed',
     icon: <CheckSquare className="h-4 w-4" />,
     issues: doneIssues,
-    color: 'text-gray-600 dark:text-gray-400',
-    bgColor: 'bg-gray-500/5',
+    color: 'text-status-closed',
+    bgColor: 'bg-status-closed-bg',
     showBlockerInfo: false
   }];
   const activeColumns = columns.slice(0, 3); // Blocked, Ready, In Progress

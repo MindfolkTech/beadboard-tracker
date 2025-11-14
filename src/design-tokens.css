@@ -62,12 +62,32 @@
     /* Progress & Motion */
     --progress-bar: 151 19% 46%; /* var(--garden-green) */
 
+    /* Status Colors */
+    --status-blocked: 0 84% 60%; /* Red for blocked items */
+    --status-blocked-bg: 0 84% 60% / 0.05;
+    --status-ready: 142 76% 36%; /* Green for ready items */
+    --status-ready-bg: 142 76% 36% / 0.05;
+    --status-in-progress: 217 91% 60%; /* Blue for in-progress items */
+    --status-in-progress-bg: 217 91% 60% / 0.05;
+    --status-closed: 210 4% 50%; /* Gray for closed items */
+    --status-closed-bg: 210 4% 50% / 0.05;
+
+    /* Issue Type Colors */
+    --type-bug: 0 84% 60%;
+    --type-bug-bg: 0 84% 60% / 0.1;
+    --type-feature: 217 91% 60%;
+    --type-feature-bg: 217 91% 60% / 0.1;
+    --type-task: 142 76% 36%;
+    --type-task-bg: 142 76% 36% / 0.1;
+    --type-epic: 271 81% 56%;
+    --type-epic-bg: 271 81% 56% / 0.1;
+
     /* Overlay & Modal System */
-    --overlay-dark: 151 19% 15%;
-    --overlay-light: 150 22% 92%;
-    --modal-backdrop: var(--overlay-dark) / 0.8;
-    --video-overlay: var(--overlay-dark) / 0.6;
-    --hover-overlay: var(--overlay-dark) / 0.2;
+    --overlay-dark: 0 0% 0%;
+    --overlay-light: 0 0% 100%;
+    --modal-backdrop: 0 0% 0% / 0.8;
+    --video-overlay: 0 0% 0% / 0.6;
+    --hover-overlay: 0 0% 0% / 0.2;
 
     /* Typography Tokens */
     --font-primary: 'Crimson Pro', Georgia, serif;
