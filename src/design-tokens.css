@@ -13,7 +13,7 @@
     --elated-emerald: 151 19% 46%; /* #5E8C77 - consolidated */
 
     /* Surface & Background */
-    --warm-white: 40 25% 91%; /* #ede9e1 - warm beige */
+    --warm-white: 40 25% 96%; /* #f8f6f3 - warm beige */
     --surface: 33 71% 97%; /* #FCF9F6 - warm white */
     --surface-accent: 150 22% 93%; /* #EBF1ED - becomes Sage Mist */
 
@@ -38,8 +38,8 @@
     --btn-cta-text: 0 0% 100%; /* #FFFFFF - for contrast */
 
     /* Tag System Colors */
-    --tag-personality-bg: 150 22% 93%; /* #EBF1ED - becomes Sage Mist (swapped from specialty) */
-    --tag-personality-text: 151 23% 29%; /* #3A5949 - becomes Sage Deep (swapped from specialty) */
+    --tag-personality-bg: 204 86% 94%; /* #e0f2fd - Sail */
+    --tag-personality-text: 245 100% 24%; /* #100078 - Navy Blue */
     --tag-modality-bg: 28 100% 96%; /* #FFF3EB - becomes Peach Fuzz (swapped from personality) */
     --tag-modality-text: 19 54% 47%; /* #B35F3A - Revised for AA (swapped from personality) */
     --tag-specialty-bg: 28 100% 96%; /* #FFF3EB - becomes Peach Fuzz (swapped from personality) */
