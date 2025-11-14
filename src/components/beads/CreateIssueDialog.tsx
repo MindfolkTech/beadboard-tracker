@@ -75,7 +75,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
               value={title}
               onChange={e => setTitle(e.target.value)}
               placeholder="Issue title..."
-              className="bg-warm-white border-border"
+              className="bg-surface border-border"
               autoFocus
             />
           </div>
@@ -87,7 +87,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
               value={description}
               onChange={e => setDescription(e.target.value)}
               placeholder="Add details..."
-              className="bg-warm-white border-border min-h-[100px]"
+              className="bg-surface border-border min-h-[100px]"
             />
           </div>
 
@@ -95,7 +95,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
             <div className="space-y-2">
               <Label htmlFor="type" className="text-text-secondary">Type</Label>
               <Select value={type} onValueChange={(v) => setType(v as IssueType)}>
-                <SelectTrigger className="bg-warm-white border-border">
+                <SelectTrigger className="bg-surface border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -110,7 +110,7 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
             <div className="space-y-2">
               <Label htmlFor="priority" className="text-text-secondary">Priority</Label>
               <Select value={priority.toString()} onValueChange={(v) => setPriority(Number(v) as Priority)}>
-                <SelectTrigger className="bg-warm-white border-border">
+                <SelectTrigger className="bg-surface border-border">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -130,14 +130,14 @@ export function CreateIssueDialog({ open, onOpenChange, onCreate, allIssues, def
               value={assignee}
               onChange={e => setAssignee(e.target.value)}
               placeholder="Username..."
-              className="bg-warm-white border-border"
+              className="bg-surface border-border"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="parent" className="text-text-secondary">Parent Epic (optional)</Label>
             <Select value={parentId} onValueChange={setParentId}>
-              <SelectTrigger className="bg-warm-white border-border">
+              <SelectTrigger className="bg-surface border-border">
                 <SelectValue placeholder="No parent" />
               </SelectTrigger>
               <SelectContent className="bg-background border-border">
